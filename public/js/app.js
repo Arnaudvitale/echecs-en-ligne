@@ -1,7 +1,9 @@
 var socket = io();
 var game = new Chess();
 var boardElement = document.getElementById('chessboard');
+var role = null;
 
+// Generate chessboard
 for (let i = 0; i < 64; i++) {
     var square = document.createElement('div');
     square.id = i;
@@ -10,15 +12,36 @@ for (let i = 0; i < 64; i++) {
     boardElement.appendChild(square);
 }
 
-function makeMove(event) {
-    var source = game.turn() + event.target.id;
-    var move = game.move(source, {sloppy: true});
+socket.on('role', (newRole) => {
+    role = newRole;
+});
 
-    if (move === null) {
-        return 'Invalid move';
+function makeMove(event) {
+    if (role !== 'player') {
+        return;
     }
 
-    socket.emit('move', move);
+    var target = event.target.id;
+
+    if (selectedSquare === null) {
+        selectedSquare = target;
+        event.target.style.backgroundColor = "yellow";  // Highlight the selected square
+    } else {
+        var move = game.move({
+            from: idToSquare(selectedSquare),
+            to: idToSquare(target),
+            promotion: 'q'  // Always promote to queen for simplicity
+        });
+
+        if (move === null) {
+            alert('Invalid move');
+        } else {
+            socket.emit('move', move);
+        }
+
+        selectedSquare = null;
+        drawBoard();  // Remove the highlight
+    }
 }
 
 socket.on('move', function(move) {
@@ -40,7 +63,15 @@ function drawBoard() {
         } else {
             square.innerHTML = piece.type;
         }
+
+        square.style.backgroundColor = null;  // Remove the highlight
     }
+}
+
+function idToSquare(id) {
+    var file = String.fromCharCode('a'.charCodeAt(0) + id % 8);
+    var rank = 8 - Math.floor(id / 8);
+    return file + rank;
 }
 
 drawBoard();
