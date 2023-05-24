@@ -8,26 +8,11 @@ const io = socketIo(server);
 
 app.use(express.static('public'));
 
-let playerCount = 0;
-
 io.on('connection', (socket) => {
     console.log('a user connected');
 
-    if (playerCount < 2) {
-        playerCount++;
-        socket.emit('role', 'player');
-    } else {
-        socket.emit('role', 'spectator');
-    }
-
     socket.on('move', (move) => {
         socket.broadcast.emit('move', move);
-    });
-
-    socket.on('disconnect', () => {
-        if (socket.role === 'player') {
-            playerCount--;
-        }
     });
 });
 

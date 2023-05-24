@@ -2,23 +2,24 @@
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
-    max-width: 600px;
-    margin: 0 auto;
+    width: 640px;
+    height: 640px;
 }
 
 .square {
-    border: 1px solid #999;
-    padding: 10px;
-    font-size: 24px;
-    text-align: center;
-    background-color: #fff;
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
 }
 
-.square:nth-child(even) {
-    background-color: #ccc;
+.square.light {
+    background-color: #f0d9b5;
+    color: #b58863;
 }
 
-.square img {
-    max-width: 100%;
-    height: auto;
+.square.dark {
+    background-color: #b58863;
+    color: #f0d9b5;
 }
