@@ -2,6 +2,7 @@ var socket = io();
 var game = new Chess();
 var boardElement = document.getElementById('chessboard');
 var role = null;
+var selectedSquare = null;
 
 // Generate chessboard
 for (let i = 0; i < 64; i++) {
@@ -61,11 +62,26 @@ function drawBoard() {
         if (piece === null) {
             square.innerHTML = '';
         } else {
-            square.innerHTML = piece.type;
+            var pieceImage = getPieceImage(piece);
+            square.innerHTML = `<img src="${pieceImage}" alt="${piece.type}">`;
         }
 
         square.style.backgroundColor = null;  // Remove the highlight
     }
+}
+
+function getPieceImage(piece) {
+    var prefix = piece.color === 'w' ? 'w' : 'b';
+    var suffix;
+    switch (piece.type) {
+        case 'p': suffix = 'p'; break;
+        case 'r': suffix = 'r'; break;
+        case 'n': suffix = 'n'; break;
+        case 'b': suffix = 'b'; break;
+        case 'q': suffix = 'q'; break;
+        case 'k': suffix = 'k'; break;
+    }
+    return `images/${prefix}${suffix}.svg`;
 }
 
 function idToSquare(id) {

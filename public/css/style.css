@@ -1,11 +1,24 @@
 #chessboard {
-    display: flex;
-    flex-wrap: wrap;
-    width: 240px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .square {
-    width: 30px;
-    height: 30px;
-    border: 1px solid black;
+    border: 1px solid #999;
+    padding: 10px;
+    font-size: 24px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.square:nth-child(even) {
+    background-color: #ccc;
+}
+
+.square img {
+    max-width: 100%;
+    height: auto;
 }
