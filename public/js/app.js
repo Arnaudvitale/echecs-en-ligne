@@ -34,3 +34,16 @@ socket.on('move', function(msg) {
         board.position(game.fen(), false);
     }
 });
+
+// when form is submitted, prevent page from reloading, send message to server, and clear input field
+$('#form').submit(function(e) {
+    e.preventDefault();
+    var message = $('#input').val();
+    socket.emit('chat message', message);
+    $('#input').val('');
+});
+
+// when a new message is received, append it to #messages
+socket.on('chat message', function(msg) {
+    $('#messages').append($('<li>').text(msg));
+});

@@ -11,14 +11,27 @@ app.use(express.static('public'));
 let numUsers = 0;
 
 io.on('connection', (socket) => {
+    // when a user connects, broadcast it to all users
     numUsers++;
     console.log('------------------');
     console.log('A user connected. Total users: ', numUsers);
 
+    // when a move is received, broadcast it to all users
+    socket.on('move', function(msg) {
+        socket.broadcast.emit('move', msg);
+    });
+    
+    // when a message is received, emit it to all users
+    socket.on('chat message', function(msg) {
+        io.emit('chat message', msg);
+    });
+
+    // when a user disconnects, broadcast it to all users
     socket.on('disconnect', () => {
         numUsers--;
         console.log('------------------');
         console.log('A user disconnected. Total users: ', numUsers);
+
     });
 })
 
