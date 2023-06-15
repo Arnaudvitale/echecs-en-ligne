@@ -3,6 +3,17 @@ var socket = io();
 // use chess.js for logic
 var game = new Chess();
 
+// Function to update game status
+var updateStatus = function() {
+    var statusEl = $('#status');
+    var moveColor = game.turn() === 'b' ? 'Black' : 'White';
+
+    statusEl.text('Turn: ' + moveColor);
+};
+
+// Initialize status
+updateStatus();
+
 var board = Chessboard('myBoard', {
     position: 'start',
     draggable: true,
@@ -20,7 +31,8 @@ var board = Chessboard('myBoard', {
             return 'snapback';
         }
 
-        // If legal move, send move to server
+        // If legal move, update status and send move to server
+        updateStatus();
         socket.emit('move', move);
     }
 });
@@ -33,17 +45,19 @@ socket.on('move', function(msg) {
     if (move !== null) {
         board.position(game.fen(), false);
     }
+
+    // Update status after move
+    updateStatus();
 });
 
-// when form is submitted, prevent page from reloading, send message to server, and clear input field
-$('#form').submit(function(e) {
-    e.preventDefault();
-    var message = $('#input').val();
-    socket.emit('chat message', message);
+$('form').submit(function(e) {
+    e.preventDefault(); // prevents page reloading
+    socket.emit('chat message', $('#input').val());
     $('#input').val('');
+    return false;
 });
 
-// when a new message is received, append it to #messages
 socket.on('chat message', function(msg) {
     $('#messages').append($('<li>').text(msg));
+    $('#messages').scrollTop($('#messages')[0].scrollHeight);
 });
