@@ -9,6 +9,7 @@
   "author": "Arnaud-Hugo",
   "license": "ISC",
   "dependencies": {
+    "chessboardjs": "^1.0.0",
     "chess.js": "^1.0.0-beta.6",
     "express": "^4.18.2",
     "mongodb": "^5.5.0",

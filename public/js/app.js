@@ -1,47 +1,36 @@
 var socket = io();
+
+// use chess.js for logic
 var game = new Chess();
-var boardElement = document.getElementById('chessboard');
 
-// Generate chessboard
-for (let i = 0; i < 64; i++) {
-    var square = document.createElement('div');
-    square.id = i;
-    square.className = 'square ' + ((i % 2) ^ (Math.floor(i / 8) % 2) ? 'light' : 'dark');
-    square.onclick = makeMove;
-    boardElement.appendChild(square);
-}
+var board = Chessboard('myBoard', {
+    position: 'start',
+    draggable: true,
+    pieceTheme: '../img/{piece}.png',
+    onDrop: function(source, target) {
+        // verify move is legal
+        var move = game.move({
+            from: source,
+            to: target,
+            promotion: 'q' // always promote to a queen for example simplicity
+        });
 
-function makeMove(event) {
-    var source = game.turn() + event.target.id;
-    var move = game.move(source, {sloppy: true});
+        // Illégal move
+        if (move === null) {
+            return 'snapback';
+        }
 
-    if (move === null) {
-        return 'Invalid move';
+        // If legal move, send move to server
+        socket.emit('move', move);
     }
-
-    socket.emit('move', move);
-}
-
-socket.on('move', function(move) {
-    game.move(move);
-    drawBoard();
 });
 
-function drawBoard() {
-    var board = game.board();
+socket.on('move', function(msg) {
+    // Do a local move if the move was legal
+    var move = game.move(msg);
 
-    for (let i = 0; i < 64; i++) {
-        var square = document.getElementById(i.toString());
-        var file = i % 8;
-        var rank = 7 - Math.floor(i / 8);
-        var piece = board[rank][file];
-
-        if (piece === null) {
-            square.innerHTML = '';
-        } else {
-            square.innerHTML = piece.type;
-        }
+    // if the move was illegal, snapback
+    if (move !== null) {
+        board.position(game.fen(), false);
     }
-}
-
-drawBoard();
+});

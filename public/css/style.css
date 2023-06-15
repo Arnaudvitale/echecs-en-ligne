@@ -1,25 +1,22 @@
-#chessboard {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
-    width: 640px;
-    height: 640px;
+h1 {
+    color: #333;
+    text-align: center;
+    padding: 20px 0;
 }
 
-.square {
-    border: 1px solid black;
+.center-align {
+    text-align: center;
+}
+
+#container {
+    /* border: rgb(236, 253, 0) 2px solid; */
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 32px;
+    flex-direction: row;
+    justify-content: space-around;
 }
 
-.square.light {
-    background-color: #f0d9b5;
-    color: #b58863;
-}
-
-.square.dark {
-    background-color: #b58863;
-    color: #f0d9b5;
+.item {
+    /* border: 1px solid #ff0000; */
+    width: 600px;
+    text-align: center;
 }
