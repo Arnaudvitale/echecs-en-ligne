@@ -8,13 +8,19 @@ const io = socketIo(server);
 
 app.use(express.static('public'));
 
-io.on('connection', (socket) => {
-    console.log('a user connected');
+let numUsers = 0;
 
-    socket.on('move', (move) => {
-        socket.broadcast.emit('move', move);
+io.on('connection', (socket) => {
+    numUsers++;
+    console.log('------------------');
+    console.log('A user connected. Total users: ', numUsers);
+
+    socket.on('disconnect', () => {
+        numUsers--;
+        console.log('------------------');
+        console.log('A user disconnected. Total users: ', numUsers);
     });
-});
+})
 
 const port = 3000;
 server.listen(port, () => {
