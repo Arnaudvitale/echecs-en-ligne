@@ -54,3 +54,18 @@ form button:hover {
     color: #aaa;
     margin: 10px 0;
 }
+
+.direct-chess {
+    border: none;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.direct-chess:hover {
+    background-color: #5a6268;
+}
