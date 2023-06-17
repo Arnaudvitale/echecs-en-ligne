@@ -57,6 +57,12 @@ $('form').submit(function(e) {
     return false;
 });
 
+$('#restart-btn').click(function() {
+    game = new Chess(); // Reset the game
+    board.position('start'); // Reset the board
+    updateStatus(); // Update game status
+});
+
 socket.on('chat message', function(msg) {
     $('#messages').append($('<li>').text(msg));
     $('#messages').scrollTop($('#messages')[0].scrollHeight);

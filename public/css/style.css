@@ -93,3 +93,18 @@ button {
 button:hover {
     background-color: #0056b3;
 }
+
+.restart {
+    margin-top: 20px;
+    border: none;
+    padding: 10px 20px;
+    background-color: #FF4136;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.restart:hover {
+    background-color: #FF5733;
+}
