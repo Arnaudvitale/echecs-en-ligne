@@ -45,7 +45,7 @@ Suivez ces étapes pour installer et exécuter le projet :
     npm install
     ```
 
-3. **Lancer le serveur :** Enfin, une fois que toutes les dépendances sont installées, vous pouvez lancer le serveur avec la commande `npm start`. Si vous avez configuré le script "start" dans votre `package.json`, il démarrera votre serveur Node.js. Si vous n'avez pas de script "start", vous pouvez démarrer votre serveur en exécutant directement votre fichier `app.js` avec Node.js, comme ceci :
+3. **Lancer le serveur :** Enfin, une fois que toutes les dépendances sont installées, vous pouvez lancer le serveur avec la commande `npm start`. Si vous avez configuré le script "start" dans votre `package.json`, il démarrera votre serveur Node.js. Si vous n'avez pas de script "start", vous pouvez démarrer votre serveur en exécutant directement votre fichier `server.js` avec Node.js, comme ceci :
 
     ```
     nodemon server.js
