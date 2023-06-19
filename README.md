@@ -6,19 +6,30 @@ Ce projet est une application web qui permet aux utilisateurs de jouer aux éche
 
 Voici une description de la structure de base du projet :
 
-- **app.js** : C'est le fichier principal de notre application Node.js. Il configure notre serveur, les routes de notre application, la connexion à la base de données MongoDB et d'autres paramètres importants.
-
-- **node_modules/** : Ce dossier contient tous les packages que nous avons installés avec npm.
+- **server.js** : C'est le fichier principal de notre application Node.js. Il configure notre serveur, les routes de notre application, la connexion à la base de données MongoDB et d'autres paramètres importants.
 
 - **package.json** : Ce fichier contient des informations sur notre projet et les dépendances que nous avons installées.
 
 - **package-lock.json** : Ce fichier est généré automatiquement par npm et contient un enregistrement précis des versions exactes des dépendances qui sont installées pour notre projet.
 
+- **models/** : Ce dossier contient les définitions de nos modèles Mongoose qui nous permettent d'interagir avec notre base de données MongoDB :
+    - **models/user.js** : Ce fichier contient la définition de notre modèle User.
+
+- **routes/** : Ce dossier contient les définitions de nos routes Express. Chaque route est séparée dans son propre fichier, ce qui rend notre code plus modulaire et facile à gérer.
+
+    - **routes/route.js** : Ce fichier contient les définitions de nos routes principales. Il contient également la définition de notre middleware d'authentification.
+
+- **img/** : Ce dossier contient les images utilisées dans notre application.
+
 - **public/** : Ce dossier contient les fichiers statiques qui seront servis par notre serveur. Voici une brève description de son contenu :
 
     - **public/index.html** : Le fichier HTML principal de notre application.
+    - **public/chess.html** : Le fichier HTML de notre jeu d'échecs.
     - **public/js/app.js** : Notre code JavaScript côté client.
-    - **public/css/style.css** : Nos styles CSS.
+    - **public/js/login.js** : Notre code JavaScript côté client pour la page de connexion.
+
+    - **public/css/style.css** : Nos styles CSS pour le jeu d'échecs.
+    - **public/css/login.css** : Nos styles CSS pour la page de connexion.
 
 ## Installation
 
