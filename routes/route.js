@@ -11,8 +11,18 @@ router.use(session({
 }));
 
 router.post("/register", (req, res) => {
-    const new_user = new user({username: req.body.username, password: req.body.password});
-    new_user.save();
+    user.findOne({username: req.body.username}).then((user_found) => {
+        if(user_found) {
+            res.send({ status: 'error', message: 'Username already taken' });
+        } else {
+            const new_user = new user({username: req.body.username, password: req.body.password});
+            new_user.save()
+                .then(() => res.send({ status: 'ok', message: `Registered ${req.body.username}`}))
+                .catch(err => res.send({ status: 'error', message: err.message }));
+        }
+    }).catch((err) => {
+        res.send({ status: 'error', message: err.message });
+    });
 });
 
 router.post("/login", (req, res) => {
@@ -21,7 +31,7 @@ router.post("/login", (req, res) => {
             req.session.username = req.body.username; // Save username in session
             res.send({ status: 'ok', username: req.body.username });
         } else {
-            res.send({ status: 'error', message: 'Incorrect password' });
+            res.send({ status: 'error', message: 'Incorrect username or password' });
         }
     }).catch(() => {
         res.send({ status: 'error', message: 'User not found' });

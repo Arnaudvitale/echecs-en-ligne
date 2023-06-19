@@ -12,15 +12,16 @@
         <form id="login-form">
             <input type="text" id="username" placeholder="Username" required/>
             <input type="password" id="password" placeholder="Password" required/>
+            <div id="login-error" class="error-message"></div>
             <button type="submit">Login</button>
         </form>
         <div class="separator">or</div>
         <form id="register-form">
             <input type="text" id="reg-username" placeholder="Username" required/>
             <input type="password" id="reg-password" placeholder="Password" required/>
+            <div id="register-error" class="error-message"></div>
             <button type="submit">Register</button>
         </form>
-        <button id="direct-chess" class="direct-chess">Go to Chess Game</button>
     </div>
     <script src="/js/login.js"></script>
 </body>
