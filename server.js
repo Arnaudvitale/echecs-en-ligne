@@ -20,6 +20,8 @@ app.use(session({
 }));
 
 let numUsers = 0;
+let currentGame = 'start';
+let chatMessages = [];
 
 // MongoDB connection
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -31,26 +33,34 @@ db.once('open', function() {
 });
 
 io.on('connection', (socket) => {
-    // when a user connects, broadcast it to all users
     numUsers++;
     console.log('------------------');
     console.log('A user connected. Total users: ', numUsers);
 
-    // when a move is received, broadcast it to all users
+    // Send current game state and chat messages
+    socket.emit('init', { game: currentGame, chat: chatMessages });
+
     socket.on('move', function(msg) {
+        currentGame = msg;
         socket.broadcast.emit('move', msg);
     });
 
-    // when a message is received, emit it to all users
     socket.on('chat message', function(msg) {
+        if (chatMessages.length > 200) {
+            chatMessages = chatMessages.slice(-200);
+        }
+        chatMessages.push(msg);
         io.emit('chat message', msg);
     });
 
-    // when a user disconnects, broadcast it to all users
     socket.on('disconnect', () => {
         numUsers--;
         console.log('------------------');
         console.log('A user disconnected. Total users: ', numUsers);
+        if (numUsers == 0) {
+            currentGame = 'start';
+            chatMessages = [];
+        }
     });
 })
 

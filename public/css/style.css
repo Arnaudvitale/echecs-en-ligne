@@ -123,3 +123,8 @@ button:hover {
 .restart:hover {
     background-color: #FF5733;
 }
+
+.username {
+    font-weight: bold;
+    color: #123456;
+}

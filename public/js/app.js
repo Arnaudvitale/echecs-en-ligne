@@ -1,17 +1,12 @@
 var socket = io();
-
-// use chess.js for logic
 var game = new Chess();
 
-// Function to update game status
 var updateStatus = function() {
     var statusEl = $('#status');
     var moveColor = game.turn() === 'b' ? 'Black' : 'White';
-
     statusEl.text('Turn: ' + moveColor);
 };
 
-// Initialize status
 updateStatus();
 
 var board = Chessboard('myBoard', {
@@ -19,60 +14,64 @@ var board = Chessboard('myBoard', {
     draggable: true,
     pieceTheme: '../img/{piece}.png',
     onDrop: function(source, target) {
-        // verify move is legal
         var move = game.move({
             from: source,
             to: target,
-            promotion: 'q' // always promote to a queen for example simplicity
+            promotion: 'q'
         });
-
-        // Illégal move
         if (move === null) {
             return 'snapback';
         }
-
-        // If legal move, update status and send move to server
         updateStatus();
-        socket.emit('move', move);
+        socket.emit('move', game.fen());
     }
 });
 
-socket.on('move', function(msg) {
-    // Do a local move if the move was legal
-    var move = game.move(msg);
-
-    // if the move was illegal, snapback
-    if (move !== null) {
-        board.position(game.fen(), false);
+socket.on('init', function(state) {
+    game.load(state.game);
+    board.position(state.game);
+    for (let msg of state.chat) {
+        let splitMsg = msg.split(':');
+        let userSpan = $('<span>').addClass('username').text(splitMsg[0] + ': ');
+        let messageSpan = $('<span>').text(splitMsg.slice(1).join(':').trim());
+        $('#messages').append($('<li>').append(userSpan, messageSpan).css('text-align', 'left'));
     }
+    $('#messages').scrollTop($('#messages')[0].scrollHeight);
+});
 
-    // Update status after move
+socket.on('move', function(msg) {
+    game.load(msg);
+    board.position(game.fen());
     updateStatus();
 });
 
 $('form').submit(function(e) {
-    e.preventDefault(); // prevents page reloading
-    socket.emit('chat message', $('#input').val());
+    e.preventDefault();
+    const username = localStorage.getItem('username');
+    const message = `${username}: ${$('#input').val()}`;
+    socket.emit('chat message', message);
     $('#input').val('');
     return false;
 });
 
-$('#restart-btn').click(function() {
-    game = new Chess(); // Reset the game
-    board.position('start'); // Reset the board
-    updateStatus(); // Update game status
-});
-
 socket.on('chat message', function(msg) {
-    $('#messages').append($('<li>').text(msg));
+    let splitMsg = msg.split(':');
+    let userSpan = $('<span>').addClass('username').text(splitMsg[0] + ': ');
+    let messageSpan = $('<span>').text(splitMsg.slice(1).join(':').trim());
+    $('#messages').append($('<li>').append(userSpan, messageSpan).css('text-align', 'left'));
     $('#messages').scrollTop($('#messages')[0].scrollHeight);
 });
 
-// After logout code
+$('#restart-btn').click(function() {
+    game = new Chess();
+    board.position('start');
+    updateStatus();
+    socket.emit('move', 'start');
+});
+
 window.onload = function() {
     const usernameElement = document.getElementById('username');
     const storedUsername = localStorage.getItem('username');
-
     if (storedUsername) {
         usernameElement.textContent = storedUsername;
     } else {
@@ -84,7 +83,7 @@ document.getElementById("logout-btn").addEventListener("click", function() {
     fetch('/logout', {
         method: 'GET',
     }).then(() => {
-        localStorage.removeItem('username'); // Remove username from local storage
-        window.location.href = '/index.html'; // Redirect to index page
+        localStorage.removeItem('username');
+        window.location.href = '/index.html';
     });
 });
