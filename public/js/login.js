@@ -1,11 +1,11 @@
 document.getElementById("login-form").addEventListener("submit", function(event){
     event.preventDefault();
-    logIn();
+    logIn(event);
 });
 
 document.getElementById("register-form").addEventListener("submit", function(event){
     event.preventDefault();
-    register();
+    register(event);
 });
 
 document.getElementById("direct-chess").addEventListener("click", function(){
@@ -24,11 +24,11 @@ function logIn(event) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ username, password })
-    }).then(response => response.json()).then(data => {
+    }).then(data => {
         if (data.error) {
             alert(data.error);
         } else {
-            window.location.href = '/chess';  // Redirect to the chess page
+            window.location.href = '/chess.html';  // Redirect to the chess page
         }
     });
 }
