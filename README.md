@@ -48,7 +48,7 @@ Suivez ces étapes pour installer et exécuter le projet :
 3. **Lancer le serveur :** Enfin, une fois que toutes les dépendances sont installées, vous pouvez lancer le serveur avec la commande `npm start`. Si vous avez configuré le script "start" dans votre `package.json`, il démarrera votre serveur Node.js. Si vous n'avez pas de script "start", vous pouvez démarrer votre serveur en exécutant directement votre fichier `app.js` avec Node.js, comme ceci :
 
     ```
-    node app.js
+    nodemon server.js
     ```
 
 Votre application devrait maintenant être en cours d'exécution et accessible à l'adresse [http://localhost:port](http://localhost:port), où "port" est le port sur lequel votre serveur est configuré pour écouter (par exemple, [http://localhost:3000](http://localhost:3000) si votre serveur écoute sur le port 3000).
