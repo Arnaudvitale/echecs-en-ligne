@@ -67,3 +67,24 @@ socket.on('chat message', function(msg) {
     $('#messages').append($('<li>').text(msg));
     $('#messages').scrollTop($('#messages')[0].scrollHeight);
 });
+
+// After logout code
+window.onload = function() {
+    const usernameElement = document.getElementById('username');
+    const storedUsername = localStorage.getItem('username');
+
+    if (storedUsername) {
+        usernameElement.textContent = storedUsername;
+    } else {
+        usernameElement.textContent = 'Guest';
+    }
+};
+
+document.getElementById("logout-btn").addEventListener("click", function() {
+    fetch('/logout', {
+        method: 'GET',
+    }).then(() => {
+        localStorage.removeItem('username'); // Remove username from local storage
+        window.location.href = '/index.html'; // Redirect to index page
+    });
+});

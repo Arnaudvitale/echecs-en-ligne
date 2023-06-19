@@ -78,6 +78,11 @@ h1 {
     padding: 10px;
 }
 
+#username {
+    font-weight: bold;
+    color: #d30d0d;
+}
+
 #form {
     display: flex;
     align-items: center;
