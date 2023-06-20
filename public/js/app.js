@@ -1,9 +1,8 @@
-// create new audio object
-var moveSound = new Audio('../sound/move.mp3');
-
-// create new socket connection
 var socket = io();
 var game = new Chess();
+var moveSound = new Audio('../sound/move.mp3');
+var whiteSquareGrey = '#a9a9a9';
+var blackSquareGrey = '#696969';
 
 // update the board position after the piece snap
 var updateStatus = function() {
@@ -11,26 +10,60 @@ var updateStatus = function() {
     var moveColor = game.turn() === 'b' ? 'Black' : 'White';
     statusEl.text('Turn: ' + moveColor);
 };
+
 updateStatus();
+
+function removeGreySquares() {
+    $('#myBoard .square-55d63').css('background', '');
+}
+
+function greySquare(square) {
+    var $square = $('#myBoard .square-' + square);
+    var background = whiteSquareGrey;
+    if ($square.hasClass('black-3c85d')) {
+        background = blackSquareGrey;
+    }
+    $square.css('background', background);
+}
 
 var board = Chessboard('myBoard', {
     position: 'start',
     draggable: true,
     pieceTheme: '../img/{piece}.png',
+    onDragStart: function(source, piece) {
+        if (game.game_over()) return false;
+        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+            return false;
+        }
+    },
     onDrop: function(source, target) {
+        removeGreySquares();
         var move = game.move({
             from: source,
             to: target,
             promotion: 'q'
         });
-        if (move === null) {
-            return 'snapback';
-        }
+        if (move === null) return 'snapback';
         updateStatus();
         socket.emit('move', game.fen());
-
-        // play sound
         moveSound.play().catch(error => console.log('Error playing sound:', error));
+    },
+    onMouseoutSquare: function(square, piece) {
+        removeGreySquares();
+    },
+    onMouseoverSquare: function(square, piece) {
+        var moves = game.moves({
+            square: square,
+            verbose: true
+        });
+        if (moves.length === 0) return;
+        greySquare(square);
+        for (var i = 0; i < moves.length; i++) {
+            greySquare(moves[i].to);
+        }
+    },
+    onSnapEnd: function() {
+        board.position(game.fen());
     }
 });
 
