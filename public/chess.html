@@ -20,7 +20,11 @@
     <h1>Welcome to Online Chess Game!</h1>
     <div id="status"></div>
     <div id="container">
-        <div class="item"></div>
+        <div class="item team-container">
+            <h2>Choose Team</h2>
+            <button id="white-team-btn" class="team-btn">White Team</button>
+            <button id="black-team-btn" class="team-btn">Black Team</button>
+        </div>
         <div class="item">
             <div id="myBoard"></div>
             <button id="restart-btn" class="restart">Restart</button>
@@ -37,5 +41,4 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/app.js"></script>
 </body>
-
 </html>
