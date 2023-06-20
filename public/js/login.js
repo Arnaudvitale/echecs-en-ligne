@@ -17,7 +17,6 @@ function showError(message, elementId) {
 
 function logIn(event) {
     event.preventDefault();
-
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const username = usernameInput.value;
@@ -42,6 +41,7 @@ function logIn(event) {
             }
         } else {
             localStorage.setItem('username', data.username); // Save username in local storage
+            localStorage.setItem('elo', data.elo); // Save Elo in local storage
             window.location.href = '/chess.html';  // Redirect to the chess page
             usernameInput.style.borderColor = '';
             passwordInput.style.borderColor = '';
@@ -80,6 +80,7 @@ function register(event) {
 
 window.onload = function() {
     const storedUsername = localStorage.getItem('username');
+    localStorage.setItem('elo', data.elo); // Save Elo in local storage
 
     if (storedUsername) {
         window.location.href = '/chess.html';

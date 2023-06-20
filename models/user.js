@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: false,
         lowercase: false
+    },
+    elo: {
+        type: Number,
+        default: 0
     }
 });
 

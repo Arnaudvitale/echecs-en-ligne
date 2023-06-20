@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const routes = require('./routes/route');
 const bodyParser = require('body-parser');
+const User = require('./models/user');
+const user = require('./models/user');
 
 const app = express();
 const server = http.createServer(app);
@@ -29,7 +31,7 @@ mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  console.log("We're connected to the database!");
+  console.log("connected to the database");
 });
 
 io.on('connection', (socket) => {
@@ -51,6 +53,47 @@ io.on('connection', (socket) => {
         }
         chatMessages.push(msg);
         io.emit('chat message', msg);
+    });
+
+    socket.on('end game', function(data) {
+        const winner = data.winner;
+        const loser = data.loser;
+        // If the game is a draw, don't change ELO scores.
+        if (winner === null && loser === null) {
+            return;
+        }
+        // Update winner ELO
+        User.findOne({username: winner})
+        .then(user => {
+            if(!user) {
+                console.error(`User not found: ${winner}`);
+                return;
+            }
+            user.elo += 10;
+            user.save();
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+        // Update loser ELO
+        User.findOne({username: loser})
+        .then(user => {
+            if(!user) {
+                console.error(`User not found: ${loser}`);
+                return;
+            }
+            user.elo = Math.max(user.elo - 10, 0); // Don't let ELO drop below 0
+            user.save();
+        })
+        .catch(err => {
+            console.error(err);
+        });
+    });
+
+    socket.on('restart', function(msg) {
+        currentGame = msg;
+        socket.broadcast.emit('restart', msg);
     });
 
     socket.on('disconnect', () => {

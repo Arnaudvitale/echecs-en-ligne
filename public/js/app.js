@@ -47,6 +47,20 @@ var board = Chessboard('myBoard', {
         updateStatus();
         socket.emit('move', game.fen());
         moveSound.play().catch(error => console.log('Error playing sound:', error));
+
+        if (game.game_over()) {
+            let winner, loser;
+            if (game.in_draw()) { // Draw
+                winner = loser = null;
+            } else if (game.turn() === 'w') { // Whites have lost
+                winner = 'Black';
+                loser = localStorage.getItem('username');
+            } else { // Blacks have lost
+                winner = 'White';
+                loser = localStorage.getItem('username');
+            }
+            socket.emit('end game', { winner: winner, loser: loser });
+        }
     },
     onMouseoutSquare: function(square, piece) {
         removeGreySquares();
@@ -79,6 +93,15 @@ socket.on('init', function(state) {
     $('#messages').scrollTop($('#messages')[0].scrollHeight);
 });
 
+socket.on('update elo', function(data) {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername === data.username) {
+        const eloElement = document.getElementById('elo');
+        eloElement.textContent = data.elo;
+        localStorage.setItem('elo', data.elo);
+    }
+});
+
 socket.on('move', function(msg) {
     game.load(msg);
     board.position(game.fen());
@@ -102,20 +125,30 @@ socket.on('chat message', function(msg) {
     $('#messages').scrollTop($('#messages')[0].scrollHeight);
 });
 
+socket.on('restart', function(msg) {
+    game = new Chess();
+    board.position(game.fen());
+    updateStatus();
+});
+
 $('#restart-btn').click(function() {
     game = new Chess();
     board.position('start');
     updateStatus();
-    socket.emit('move', 'start');
+    socket.emit('restart', 'start');
 });
 
 window.onload = function() {
     const usernameElement = document.getElementById('username');
+    const eloElement = document.getElementById('elo');
     const storedUsername = localStorage.getItem('username');
-    if (storedUsername) {
+    const storedElo = localStorage.getItem('elo');
+    if (storedUsername && storedElo) {
         usernameElement.textContent = storedUsername;
+        eloElement.textContent = storedElo;
     } else {
         usernameElement.textContent = 'Guest';
+        eloElement.textContent = '0';
     }
 };
 
