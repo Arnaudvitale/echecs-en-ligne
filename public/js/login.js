@@ -45,8 +45,6 @@ function logIn(event) {
             window.location.href = '/chess.html';  // Redirect to the chess page
             usernameInput.style.borderColor = '';
             passwordInput.style.borderColor = '';
-            clearError(usernameInput);
-            clearError(passwordInput);
         }
     });
 }
@@ -73,7 +71,6 @@ function register(event) {
         } else {
             alert(`Registered ${username}`);
             usernameInput.style.borderColor = '';
-            clearError(usernameInput);
         }
     });
 }
