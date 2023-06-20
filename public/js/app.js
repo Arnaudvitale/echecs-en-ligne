@@ -1,12 +1,16 @@
+// create new audio object
+var moveSound = new Audio('../sound/move.mp3');
+
+// create new socket connection
 var socket = io();
 var game = new Chess();
 
+// update the board position after the piece snap
 var updateStatus = function() {
     var statusEl = $('#status');
     var moveColor = game.turn() === 'b' ? 'Black' : 'White';
     statusEl.text('Turn: ' + moveColor);
 };
-
 updateStatus();
 
 var board = Chessboard('myBoard', {
@@ -24,6 +28,9 @@ var board = Chessboard('myBoard', {
         }
         updateStatus();
         socket.emit('move', game.fen());
+
+        // play sound
+        moveSound.play().catch(error => console.log('Error playing sound:', error));
     }
 });
 
