@@ -89,6 +89,8 @@ var board = Chessboard('myBoard', {
             socket.emit('end game', { winner: winner, loser: loser });
             // Here we emit the restart event with the 'start' argument which represents the initial position
             socket.emit('restart', 'start');
+            whiteTeamPlayer = null;
+            blackTeamPlayer = null;
             document.getElementById('white-team-btn').style.opacity = '1';
             document.getElementById('white-team-btn').style.pointerEvents = 'auto';
             document.getElementById('black-team-btn').style.opacity = '1';
