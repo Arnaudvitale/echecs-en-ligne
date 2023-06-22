@@ -23,6 +23,7 @@ app.use(session({
 let numUsers = 0;
 let currentGame = 'start';
 let chatMessages = [];
+let userToSocketId = {};
 let teams = {
     'w': false,
     'b': false
@@ -48,6 +49,7 @@ io.on('connection', (socket) => {
     socket.on('team selected', function({team, username}) {
         if (!teams[team]) {
             teams[team] = username;
+            userToSocketId[username] = socket.id;
             socket.username = username;
             io.emit('teams update', teams);
         }
@@ -70,13 +72,6 @@ io.on('connection', (socket) => {
     });
 
     socket.on('end game', function({ winner, loser }) {
-        teams = {
-            'w': false,
-            'b': false
-        };
-        // Here we set the game state back to start
-        currentGame = 'start';
-        io.emit('teams update', teams);
 
         if (winner === null && loser === null) {
             return;
@@ -89,7 +84,9 @@ io.on('connection', (socket) => {
                 return;
             }
             user.elo = user.elo + 10;
-            user.save();
+            user.save().then(() => {
+                io.to(userToSocketId[winner]).emit('update elo', { username: winner, elo: user.elo }); // send to correct socket id
+            });
         })
         .catch(err => {
             console.error(err);
@@ -101,13 +98,22 @@ io.on('connection', (socket) => {
                 console.error(`User not found: ${loser}`);
                 return;
             }
-            console.log(user);
             user.elo = Math.max(user.elo - 10, 0); // Don't let ELO drop below 0
-            user.save();
+            user.save().then(() => {
+                io.to(userToSocketId[loser]).emit('update elo', { username: loser, elo: user.elo }); // send to correct socket id
+            });
         })
         .catch(err => {
             console.error(err);
         });
+
+        teams = {
+            'w': false,
+            'b': false
+        };
+        // Here we set the game state back to start
+        currentGame = 'start';
+        io.emit('teams update', teams);
     });
 
     socket.on('restart', function(msg) {
@@ -130,6 +136,7 @@ io.on('connection', (socket) => {
         } else if (teams['b'] === socket.username) {
             teams['b'] = false;
         }
+        delete userToSocketId[socket.username];
         io.emit('teams update', teams);
         if (numUsers == 0) {
             currentGame = 'start';
