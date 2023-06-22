@@ -3,6 +3,9 @@ var game = new Chess();
 var moveSound = new Audio('../sound/move.mp3');
 var whiteSquareGrey = '#a9a9a9';
 var blackSquareGrey = '#696969';
+var userTeam = null;
+let whiteTeamPlayer = null;
+let blackTeamPlayer = null;
 
 // update the board position after the piece snap
 var updateStatus = function() {
@@ -26,17 +29,40 @@ function greySquare(square) {
     $square.css('background', background);
 }
 
+document.getElementById('white-team-btn').addEventListener('click', function() {
+    whiteTeamPlayer = localStorage.getItem('username');
+    if (userTeam) return;
+    userTeam = 'w';
+    this.style.opacity = '0.6';
+    this.style.pointerEvents = 'none';
+    document.getElementById('black-team-btn').style.pointerEvents = 'none';
+    localStorage.setItem('team', 'w');
+    socket.emit('team selected', {team: 'w', username: localStorage.getItem('username')});
+});
+
+document.getElementById('black-team-btn').addEventListener('click', function() {
+    blackTeamPlayer = localStorage.getItem('username');
+    if (userTeam) return;
+    userTeam = 'b';
+    this.style.opacity = '0.6';
+    this.style.pointerEvents = 'none';
+    document.getElementById('white-team-btn').style.pointerEvents = 'none';
+    localStorage.setItem('team', 'b');
+    socket.emit('team selected', {team: 'b', username: localStorage.getItem('username')});
+});
+
 var board = Chessboard('myBoard', {
     position: 'start',
     draggable: true,
     pieceTheme: '../img/{piece}.png',
     onDragStart: function(source, piece) {
         if (game.game_over()) return false;
-        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+        if (!userTeam || (userTeam === 'w' && piece.search(/^b/) !== -1) || (userTeam === 'b' && piece.search(/^w/) !== -1)) {
             return false;
         }
     },
     onDrop: function(source, target) {
+        if (!userTeam) return 'snapback';
         removeGreySquares();
         var move = game.move({
             from: source,
@@ -49,23 +75,35 @@ var board = Chessboard('myBoard', {
         moveSound.play().catch(error => console.log('Error playing sound:', error));
 
         if (game.game_over()) {
+            userTeam = null;
             let winner, loser;
             if (game.in_draw()) { // Draw
                 winner = loser = null;
             } else if (game.turn() === 'w') { // Whites have lost
-                winner = 'Black';
-                loser = localStorage.getItem('username');
+                winner = blackTeamPlayer;
+                loser = whiteTeamPlayer;
             } else { // Blacks have lost
-                winner = 'White';
-                loser = localStorage.getItem('username');
+                winner = whiteTeamPlayer;
+                loser = blackTeamPlayer;
             }
             socket.emit('end game', { winner: winner, loser: loser });
+            // Here we emit the restart event with the 'start' argument which represents the initial position
+            socket.emit('restart', 'start');
+            document.getElementById('white-team-btn').style.opacity = '1';
+            document.getElementById('white-team-btn').style.pointerEvents = 'auto';
+            document.getElementById('black-team-btn').style.opacity = '1';
+            document.getElementById('black-team-btn').style.pointerEvents = 'auto';
         }
     },
     onMouseoutSquare: function(square, piece) {
         removeGreySquares();
     },
     onMouseoverSquare: function(square, piece) {
+        if (!piece || !userTeam) return;
+        var pieceColor = piece.charAt(0);
+        if ((userTeam === 'w' && pieceColor === 'b') || (userTeam === 'b' && pieceColor === 'w')) {
+            return;
+        }
         var moves = game.moves({
             square: square,
             verbose: true
@@ -91,6 +129,59 @@ socket.on('init', function(state) {
         $('#messages').append($('<li>').append(userSpan, messageSpan).css('text-align', 'left'));
     }
     $('#messages').scrollTop($('#messages')[0].scrollHeight);
+
+    // initialize userTeam based on localStorage
+    userTeam = localStorage.getItem('team');
+});
+
+socket.on('team selected', function({team, username}) {
+    if (username === localStorage.getItem('username')) {
+        userTeam = team;
+        if (team === 'w') {
+            document.getElementById('white-team-btn').style.opacity = '0.6';
+            document.getElementById('white-team-btn').style.pointerEvents = 'none';
+        } else if (team === 'b') {
+            document.getElementById('black-team-btn').style.opacity = '0.6';
+            document.getElementById('black-team-btn').style.pointerEvents = 'none';
+        }
+    }
+});
+
+socket.on('teams update', function(teams) {
+    if (teams['w']) {
+        document.getElementById('white-team-btn').style.opacity = '0.6';
+        document.getElementById('white-team-btn').style.pointerEvents = 'none';
+        if (localStorage.getItem('username') === teams['w']) {
+            userTeam = 'w';
+        }
+    } else {
+        document.getElementById('white-team-btn').style.opacity = '1';
+        document.getElementById('white-team-btn').style.pointerEvents = 'auto';
+    }
+    if (teams['b']) {
+        document.getElementById('black-team-btn').style.opacity = '0.6';
+        document.getElementById('black-team-btn').style.pointerEvents = 'none';
+        if (localStorage.getItem('username') === teams['b']) {
+            userTeam = 'b';
+        }
+    } else {
+        document.getElementById('black-team-btn').style.opacity = '1';
+        document.getElementById('black-team-btn').style.pointerEvents = 'auto';
+    }
+    if (userTeam) {
+        document.getElementById('restart-btn').style.visibility = 'visible';
+    } else {
+        document.getElementById('restart-btn').style.visibility = 'hidden';
+    }
+});
+
+socket.on('connect', function() {
+    var username = localStorage.getItem('username');
+    var team = localStorage.getItem('team');
+    if (username && team) {
+        userTeam = team;
+        socket.emit('team selected', {team: team, username: username});
+    }
 });
 
 socket.on('update elo', function(data) {
@@ -129,10 +220,22 @@ socket.on('restart', function(msg) {
     game = new Chess();
     board.position(game.fen());
     updateStatus();
+    whiteTeamPlayer = null;
+    blackTeamPlayer = null;
+    userTeam = null;
+    document.getElementById('white-team-btn').style.opacity = '1';
+    document.getElementById('white-team-btn').style.pointerEvents = 'auto';
+    document.getElementById('black-team-btn').style.opacity = '1';
+    document.getElementById('black-team-btn').style.pointerEvents = 'auto';
+    socket.emit('team selected', {team: 'w', username: null});
+    socket.emit('team selected', {team: 'b', username: null});
 });
 
 $('#restart-btn').click(function() {
     game = new Chess();
+    whiteTeamPlayer = null;
+    blackTeamPlayer = null;
+    userTeam = null;
     board.position('start');
     updateStatus();
     socket.emit('restart', 'start');
@@ -157,6 +260,8 @@ document.getElementById("logout-btn").addEventListener("click", function() {
         method: 'GET',
     }).then(() => {
         localStorage.removeItem('username');
+        localStorage.removeItem('team');
+        localStorage.removeItem('elo');
         window.location.href = '/index.html';
     });
 });

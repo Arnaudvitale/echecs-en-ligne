@@ -7,7 +7,6 @@ const session = require('express-session');
 const routes = require('./routes/route');
 const bodyParser = require('body-parser');
 const User = require('./models/user');
-const user = require('./models/user');
 
 const app = express();
 const server = http.createServer(app);
@@ -24,6 +23,10 @@ app.use(session({
 let numUsers = 0;
 let currentGame = 'start';
 let chatMessages = [];
+let teams = {
+    'w': false,
+    'b': false
+};
 
 // MongoDB connection
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -40,11 +43,22 @@ io.on('connection', (socket) => {
     console.log('A user connected. Total users: ', numUsers);
 
     // Send current game state and chat messages
-    socket.emit('init', { game: currentGame, chat: chatMessages });
+    socket.emit('init', { game: currentGame, chat: chatMessages, teams: teams });
+
+    socket.on('team selected', function({team, username}) {
+        if (!teams[team]) {
+            teams[team] = username;
+            socket.username = username;
+            io.emit('teams update', teams);
+        }
+    });
 
     socket.on('move', function(msg) {
+        if (!(teams['w'] === socket.username || teams['b'] === socket.username)) {
+            return;
+        }
         currentGame = msg;
-        socket.broadcast.emit('move', msg);
+        io.emit('move', msg);
     });
 
     socket.on('chat message', function(msg) {
@@ -55,34 +69,39 @@ io.on('connection', (socket) => {
         io.emit('chat message', msg);
     });
 
-    socket.on('end game', function(data) {
-        const winner = data.winner;
-        const loser = data.loser;
-        // If the game is a draw, don't change ELO scores.
+    socket.on('end game', function({ winner, loser }) {
+        teams = {
+            'w': false,
+            'b': false
+        };
+        // Here we set the game state back to start
+        currentGame = 'start';
+        io.emit('teams update', teams);
+
         if (winner === null && loser === null) {
             return;
         }
-        // Update winner ELO
+
         User.findOne({username: winner})
         .then(user => {
             if(!user) {
                 console.error(`User not found: ${winner}`);
                 return;
             }
-            user.elo += 10;
+            user.elo = user.elo + 10;
             user.save();
         })
         .catch(err => {
             console.error(err);
         });
 
-        // Update loser ELO
         User.findOne({username: loser})
         .then(user => {
             if(!user) {
                 console.error(`User not found: ${loser}`);
                 return;
             }
+            console.log(user);
             user.elo = Math.max(user.elo - 10, 0); // Don't let ELO drop below 0
             user.save();
         })
@@ -93,19 +112,44 @@ io.on('connection', (socket) => {
 
     socket.on('restart', function(msg) {
         currentGame = msg;
-        socket.broadcast.emit('restart', msg);
+        teams = {
+            'w': false,
+            'b': false
+        };
+        io.emit('teams update', teams); // Change to io.emit
+        io.emit('restart', msg); // Change to io.emit
+        io.emit('teams update', teams); // Change to io.emit
     });
 
     socket.on('disconnect', () => {
         numUsers--;
         console.log('------------------');
         console.log('A user disconnected. Total users: ', numUsers);
+        if (teams['w'] === socket.username) {
+            teams['w'] = false;
+        } else if (teams['b'] === socket.username) {
+            teams['b'] = false;
+        }
+        io.emit('teams update', teams);
         if (numUsers == 0) {
             currentGame = 'start';
             chatMessages = [];
+            teams = {
+                'w': false,
+                'b': false
+            };
+            io.emit('teams update', teams);
         }
     });
-})
+
+    io.emit('teams update', teams);
+
+    if (teams['w'] === socket.username) {
+        socket.emit('team selected', {team: 'w', username: socket.username});
+    } else if (teams['b'] === socket.username) {
+        socket.emit('team selected', {team: 'b', username: socket.username});
+    }
+});
 
 const port = 3000;
 server.listen(port, () => {
