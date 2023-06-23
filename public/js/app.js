@@ -75,22 +75,27 @@ var board = Chessboard('myBoard', {
         moveSound.play().catch(error => console.log('Error playing sound:', error));
 
         if (game.game_over()) {
-            userTeam = null;
             let winner, loser;
             if (game.in_draw()) { // Draw
                 winner = loser = null;
-            } else if (game.turn() === 'w') { // Whites have lost
-                winner = blackTeamPlayer;
-                loser = whiteTeamPlayer;
-            } else { // Blacks have lost
-                winner = whiteTeamPlayer;
-                loser = blackTeamPlayer;
+            } else if (game.turn() === 'b') { // Whites have won
+                console.log('Winner: ' + whiteTeamPlayer + ' Loser: ' + blackTeamPlayer);
+                winner = localStorage.getItem('whiteTeamPlayer');
+                loser = localStorage.getItem('blackTeamPlayer');
+            } else { // Blacks have won
+                console.log('Winner: ' + whiteTeamPlayer + ' Loser: ' + blackTeamPlayer);
+                winner = localStorage.getItem('blackTeamPlayer');
+                loser = localStorage.getItem('whiteTeamPlayer');
             }
+            console.log('Game over. Winner:', winner, ', Loser:', loser);
             socket.emit('end game', { winner: winner, loser: loser });
             // Here we emit the restart event with the 'start' argument which represents the initial position
             socket.emit('restart', 'start');
             whiteTeamPlayer = null;
             blackTeamPlayer = null;
+            userTeam = null;
+            localStorage.removeItem('whiteTeamPlayer');
+            localStorage.removeItem('blackTeamPlayer');
             document.getElementById('white-team-btn').style.opacity = '1';
             document.getElementById('white-team-btn').style.pointerEvents = 'auto';
             document.getElementById('black-team-btn').style.opacity = '1';
@@ -142,9 +147,11 @@ socket.on('team selected', function({team, username}) {
         if (team === 'w') {
             document.getElementById('white-team-btn').style.opacity = '0.6';
             document.getElementById('white-team-btn').style.pointerEvents = 'none';
+            whiteTeamPlayer = username;
         } else if (team === 'b') {
             document.getElementById('black-team-btn').style.opacity = '0.6';
             document.getElementById('black-team-btn').style.pointerEvents = 'none';
+            blackTeamPlayer = username;
         }
     }
 });
@@ -155,6 +162,7 @@ socket.on('teams update', function(teams) {
         document.getElementById('white-team-btn').style.pointerEvents = 'none';
         if (localStorage.getItem('username') === teams['w']) {
             userTeam = 'w';
+            whiteTeamPlayer = teams['w'];
         }
     } else {
         document.getElementById('white-team-btn').style.opacity = '1';
@@ -165,6 +173,7 @@ socket.on('teams update', function(teams) {
         document.getElementById('black-team-btn').style.pointerEvents = 'none';
         if (localStorage.getItem('username') === teams['b']) {
             userTeam = 'b';
+            blackTeamPlayer = teams['b'];
         }
     } else {
         document.getElementById('black-team-btn').style.opacity = '1';
@@ -174,6 +183,16 @@ socket.on('teams update', function(teams) {
         document.getElementById('restart-btn').style.visibility = 'visible';
     } else {
         document.getElementById('restart-btn').style.visibility = 'hidden';
+    }
+    if (teams['w']) {
+        localStorage.setItem('whiteTeamPlayer', teams['w']);
+    } else {
+        localStorage.removeItem('whiteTeamPlayer');
+    }
+    if (teams['b']) {
+        localStorage.setItem('blackTeamPlayer', teams['b']);
+    } else {
+        localStorage.removeItem('blackTeamPlayer');
     }
 });
 
@@ -225,6 +244,9 @@ socket.on('restart', function(msg) {
     whiteTeamPlayer = null;
     blackTeamPlayer = null;
     userTeam = null;
+    localStorage.removeItem('whiteTeamPlayer');
+    localStorage.removeItem('blackTeamPlayer');
+    localStorage.removeItem('team');
     document.getElementById('white-team-btn').style.opacity = '1';
     document.getElementById('white-team-btn').style.pointerEvents = 'auto';
     document.getElementById('black-team-btn').style.opacity = '1';
@@ -262,6 +284,8 @@ document.getElementById("logout-btn").addEventListener("click", function() {
         method: 'GET',
     }).then(() => {
         localStorage.removeItem('username');
+        localStorage.removeItem('whiteTeamPlayer');
+        localStorage.removeItem('blackTeamPlayer');
         localStorage.removeItem('team');
         localStorage.removeItem('elo');
         window.location.href = '/index.html';
