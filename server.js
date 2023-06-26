@@ -158,7 +158,7 @@ io.on('connection', (socket) => {
     }
 });
 
-const port = 3000;
+const port = 8080;
 server.listen(port, () => {
     console.log(`Server is listening at http://localhost:${port}`)
 });
