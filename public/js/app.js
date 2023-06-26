@@ -38,6 +38,7 @@ document.getElementById('white-team-btn').addEventListener('click', function() {
     document.getElementById('black-team-btn').style.pointerEvents = 'none';
     localStorage.setItem('team', 'w');
     socket.emit('team selected', {team: 'w', username: localStorage.getItem('username')});
+    board.orientation('white');
 });
 
 document.getElementById('black-team-btn').addEventListener('click', function() {
@@ -49,6 +50,7 @@ document.getElementById('black-team-btn').addEventListener('click', function() {
     document.getElementById('white-team-btn').style.pointerEvents = 'none';
     localStorage.setItem('team', 'b');
     socket.emit('team selected', {team: 'b', username: localStorage.getItem('username')});
+    board.orientation('black');
 });
 
 var board = Chessboard('myBoard', {
@@ -217,6 +219,11 @@ socket.on('update elo', function(data) {
 socket.on('move', function(msg) {
     game.load(msg);
     board.position(game.fen());
+    if (userTeam === 'w' || userTeam === null) {
+        board.orientation('white');
+    } else if (userTeam === 'b') {
+        board.orientation('black');
+    }
     updateStatus();
 });
 
@@ -253,6 +260,7 @@ socket.on('restart', function(msg) {
     document.getElementById('black-team-btn').style.pointerEvents = 'auto';
     socket.emit('team selected', {team: 'w', username: null});
     socket.emit('team selected', {team: 'b', username: null});
+    board.orientation('white');
 });
 
 $('#restart-btn').click(function() {

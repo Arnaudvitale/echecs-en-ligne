@@ -12,7 +12,7 @@ function showError(message, elementId) {
     const errorElement = document.getElementById(elementId);
     errorElement.textContent = message;
     errorElement.previousElementSibling.classList.add('error');
-    errorElement.style.visibility = 'visible';
+    errorElement.style.display = 'block';
 }
 
 function logIn(event) {
@@ -54,6 +54,8 @@ function register(event) {
 
     const usernameInput = document.getElementById('reg-username');
     const passwordInput = document.getElementById('reg-password');
+    const successElement = document.getElementById('register-success');
+    const errorElement = document.getElementById('register-error');
     const username = usernameInput.value;
     const password = passwordInput.value;
 
@@ -68,9 +70,15 @@ function register(event) {
             usernameInput.style.borderColor = 'red';
             showError(data.message, 'register-error');
             passwordInput.style.borderColor = '';
+            successElement.style.display = 'none';
+            errorElement.style.display = 'block';
         } else {
-            alert(`Registered ${username}`);
+            successElement.textContent = `Registered ${username}`;
+            successElement.style.display = 'block';
+            errorElement.style.display = 'none';
             usernameInput.style.borderColor = '';
+            passwordInput.value = '';
+            usernameInput.value = '';
         }
     });
 }

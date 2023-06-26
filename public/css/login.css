@@ -29,7 +29,7 @@ h1 {
 }
 
 form input {
-    width: auto;
+    width: 95%;
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 10px;
@@ -55,15 +55,25 @@ form button:hover {
     margin: 10px 0;
 }
 
+.error {
+    border-radius: 5px;
+}
+
+.success-message,
 .error-message {
-    color: white;
-    background-color: rgb(197, 0, 0);
+    width: 95%;
     padding: 5px;
     margin-bottom: 10px;
     text-align: center;
-    visibility: hidden;
+    display: none;
 }
 
-.error {
-    border-radius: 5px;
+.error-message {
+    color: white;
+    background-color: rgb(197, 0, 0);
+}
+
+.success-message {
+    color: white;
+    background-color: rgb(1, 160, 1);
 }
