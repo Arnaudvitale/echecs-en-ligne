@@ -11,6 +11,12 @@ let blackTeamPlayer = null;
 var updateStatus = function() {
     var statusEl = $('#status');
     var moveColor = game.turn() === 'b' ? 'Black' : 'White';
+    // var currentPlayer = game.turn() === 'b' ? blackTeamPlayer : whiteTeamPlayer;
+    // if (currentPlayer) {
+    //     statusEl.text('Turn: ' + moveColor + ' (' + currentPlayer + ')');
+    // } else {
+    //     statusEl.text('Turn: ' + moveColor);
+    // }
     statusEl.text('Turn: ' + moveColor);
 };
 
@@ -155,6 +161,7 @@ socket.on('team selected', function({team, username}) {
             document.getElementById('black-team-btn').style.pointerEvents = 'none';
             blackTeamPlayer = username;
         }
+        updateStatus();
     }
 });
 
@@ -227,6 +234,15 @@ socket.on('move', function(msg) {
     updateStatus();
 });
 
+var inputField = document.getElementById('input');
+inputField.addEventListener('input', function() {
+    if (inputField.value.length >= 150) {
+        inputField.style.border = '2px solid red';
+    } else {
+        inputField.style.border = '';
+    }
+});
+
 $('form').submit(function(e) {
     e.preventDefault();
     const username = localStorage.getItem('username');
@@ -240,7 +256,7 @@ socket.on('chat message', function(msg) {
     let splitMsg = msg.split(':');
     let userSpan = $('<span>').addClass('username').text(splitMsg[0] + ': ');
     let messageSpan = $('<span>').text(splitMsg.slice(1).join(':').trim());
-    $('#messages').append($('<li>').append(userSpan, messageSpan).css('text-align', 'left'));
+    $('#messages').append($('<li>').append(userSpan, messageSpan).css('text-align', 'left').css('word-wrap', 'break-word').css('max-width', '400px'));
     $('#messages').scrollTop($('#messages')[0].scrollHeight);
 });
 
@@ -286,6 +302,15 @@ window.onload = function() {
         eloElement.textContent = '0';
     }
 };
+
+window.addEventListener('beforeunload', function() {
+    if (this.localStorage.getItem("whiteTeamPlayer") === this.localStorage.getItem("username")) {
+        localStorage.removeItem('whiteTeamPlayer');
+    } else if (this.localStorage.getItem("blackTeamPlayer") === this.localStorage.getItem("username")) {
+        localStorage.removeItem('blackTeamPlayer');
+    }
+    localStorage.removeItem('team');
+});
 
 document.getElementById("logout-btn").addEventListener("click", function() {
     fetch('/logout', {
