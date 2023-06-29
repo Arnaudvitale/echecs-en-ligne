@@ -136,6 +136,10 @@ socket.on('init', function(state) {
     userTeam = localStorage.getItem('team');
 });
 
+socket.on('game result', function(data) {
+    alert(data.message);
+});
+
 socket.on('team selected', function({team, username}) {
     if (team === 'w') {
         whiteTeamPlayer = username;
