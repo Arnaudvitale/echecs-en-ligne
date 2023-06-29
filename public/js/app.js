@@ -91,8 +91,10 @@ var board = Chessboard('myBoard', {
                 winner = localStorage.getItem('blackTeamPlayer');
                 loser = localStorage.getItem('whiteTeamPlayer');
             }
-            console.log('Game over. Winner:', winner, ', Loser:', loser);
+            // console.log('Game over. Winner:', winner, ', Loser:', loser);
             socket.emit('end game', { winner: winner, loser: loser });
+            let moveColor2 = game.turn() === 'w' ? 'White' : 'Black';
+            document.getElementById('status').innerHTML = `Turn: ${moveColor2}`;
         }
     },
     onMouseoutSquare: function(square, piece) {
@@ -135,39 +137,42 @@ socket.on('init', function(state) {
 });
 
 socket.on('team selected', function({team, username}) {
-    if (username === localStorage.getItem('username')) {
-        userTeam = team;
-        if (team === 'w') {
-            document.getElementById('white-team-btn').style.opacity = '0.6';
-            document.getElementById('white-team-btn').style.pointerEvents = 'none';
-            whiteTeamPlayer = username;
-        } else if (team === 'b') {
-            document.getElementById('black-team-btn').style.opacity = '0.6';
-            document.getElementById('black-team-btn').style.pointerEvents = 'none';
-            blackTeamPlayer = username;
+    if (team === 'w') {
+        whiteTeamPlayer = username;
+        document.getElementById('white-team-btn').style.opacity = '0.6';
+        document.getElementById('white-team-btn').style.pointerEvents = 'none';
+        if (username === localStorage.getItem('username')) {
+            userTeam = team;
         }
-        updateStatus();
+    } else if (team === 'b') {
+        blackTeamPlayer = username;
+        document.getElementById('black-team-btn').style.opacity = '0.6';
+        document.getElementById('black-team-btn').style.pointerEvents = 'none';
+        if (username === localStorage.getItem('username')) {
+            userTeam = team;
+        }
     }
+    updateStatus();
 });
 
 socket.on('teams update', function(teams) {
     if (teams['w']) {
+        whiteTeamPlayer = teams['w'];
         document.getElementById('white-team-btn').style.opacity = '0.6';
         document.getElementById('white-team-btn').style.pointerEvents = 'none';
         if (localStorage.getItem('username') === teams['w']) {
             userTeam = 'w';
-            whiteTeamPlayer = teams['w'];
         }
     } else {
         document.getElementById('white-team-btn').style.opacity = '1';
         document.getElementById('white-team-btn').style.pointerEvents = 'auto';
     }
     if (teams['b']) {
+        blackTeamPlayer = teams['b'];
         document.getElementById('black-team-btn').style.opacity = '0.6';
         document.getElementById('black-team-btn').style.pointerEvents = 'none';
         if (localStorage.getItem('username') === teams['b']) {
             userTeam = 'b';
-            blackTeamPlayer = teams['b'];
         }
     } else {
         document.getElementById('black-team-btn').style.opacity = '1';
@@ -188,6 +193,7 @@ socket.on('teams update', function(teams) {
     } else {
         localStorage.removeItem('blackTeamPlayer');
     }
+    updateStatus();
 });
 
 socket.on('connect', function() {
