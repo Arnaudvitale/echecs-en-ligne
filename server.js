@@ -52,6 +52,7 @@ io.on('connection', (socket) => {
             userToSocketId[username] = socket.id;
             socket.username = username;
             io.emit('teams update', teams);
+            io.emit('player joined', {username: username, team: team});
         }
     });
 
@@ -61,6 +62,7 @@ io.on('connection', (socket) => {
         }
         currentGame = msg;
         io.emit('move', msg);
+        io.emit('move sound');
     });
 
     socket.on('chat message', function(msg) {
@@ -122,9 +124,9 @@ io.on('connection', (socket) => {
             'w': false,
             'b': false
         };
-        io.emit('teams update', teams); // Change to io.emit
-        io.emit('restart', msg); // Change to io.emit
-        io.emit('teams update', teams); // Change to io.emit
+        io.emit('teams update', teams);
+        io.emit('restart', msg);
+        io.emit('teams update', teams);
     });
 
     socket.on('disconnect', () => {

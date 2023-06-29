@@ -7,21 +7,6 @@ var userTeam = null;
 let whiteTeamPlayer = null;
 let blackTeamPlayer = null;
 
-// update the board position after the piece snap
-var updateStatus = function() {
-    var statusEl = $('#status');
-    var moveColor = game.turn() === 'b' ? 'Black' : 'White';
-    // var currentPlayer = game.turn() === 'b' ? blackTeamPlayer : whiteTeamPlayer;
-    // if (currentPlayer) {
-    //     statusEl.text('Turn: ' + moveColor + ' (' + currentPlayer + ')');
-    // } else {
-    //     statusEl.text('Turn: ' + moveColor);
-    // }
-    statusEl.text('Turn: ' + moveColor);
-};
-
-updateStatus();
-
 function removeGreySquares() {
     $('#myBoard .square-55d63').css('background', '');
 }
@@ -59,6 +44,18 @@ document.getElementById('black-team-btn').addEventListener('click', function() {
     board.orientation('black');
 });
 
+var updateStatus = function() {
+    let moveColor = game.turn() === 'w' ? 'White' : 'Black';
+    let currentTurnPlayer = game.turn() === 'w' ? whiteTeamPlayer : blackTeamPlayer;
+    if (currentTurnPlayer === null) {
+        document.getElementById('status').innerHTML = `Turn: ${moveColor}`;
+    } else {
+        document.getElementById('status').innerHTML = `Turn: ${moveColor} (${currentTurnPlayer})`;
+    }
+};
+
+updateStatus();
+
 var board = Chessboard('myBoard', {
     position: 'start',
     draggable: true,
@@ -80,34 +77,22 @@ var board = Chessboard('myBoard', {
         if (move === null) return 'snapback';
         updateStatus();
         socket.emit('move', game.fen());
-        moveSound.play().catch(error => console.log('Error playing sound:', error));
 
         if (game.game_over()) {
             let winner, loser;
             if (game.in_draw()) { // Draw
                 winner = loser = null;
             } else if (game.turn() === 'b') { // Whites have won
-                console.log('Winner: ' + whiteTeamPlayer + ' Loser: ' + blackTeamPlayer);
+                // console.log('Winner: ' + whiteTeamPlayer + ' Loser: ' + blackTeamPlayer);
                 winner = localStorage.getItem('whiteTeamPlayer');
                 loser = localStorage.getItem('blackTeamPlayer');
             } else { // Blacks have won
-                console.log('Winner: ' + whiteTeamPlayer + ' Loser: ' + blackTeamPlayer);
+                // console.log('Winner: ' + whiteTeamPlayer + ' Loser: ' + blackTeamPlayer);
                 winner = localStorage.getItem('blackTeamPlayer');
                 loser = localStorage.getItem('whiteTeamPlayer');
             }
             console.log('Game over. Winner:', winner, ', Loser:', loser);
             socket.emit('end game', { winner: winner, loser: loser });
-            // Here we emit the restart event with the 'start' argument which represents the initial position
-            socket.emit('restart', 'start');
-            whiteTeamPlayer = null;
-            blackTeamPlayer = null;
-            userTeam = null;
-            localStorage.removeItem('whiteTeamPlayer');
-            localStorage.removeItem('blackTeamPlayer');
-            document.getElementById('white-team-btn').style.opacity = '1';
-            document.getElementById('white-team-btn').style.pointerEvents = 'auto';
-            document.getElementById('black-team-btn').style.opacity = '1';
-            document.getElementById('black-team-btn').style.pointerEvents = 'auto';
         }
     },
     onMouseoutSquare: function(square, piece) {
@@ -223,6 +208,10 @@ socket.on('update elo', function(data) {
     }
 });
 
+socket.on('move sound', function() {
+    moveSound.play().catch(error => console.log('Error playing sound:', error));
+});
+
 socket.on('move', function(msg) {
     game.load(msg);
     board.position(game.fen());
@@ -271,9 +260,9 @@ socket.on('restart', function(msg) {
     localStorage.removeItem('blackTeamPlayer');
     localStorage.removeItem('team');
     document.getElementById('white-team-btn').style.opacity = '1';
-    document.getElementById('white-team-btn').style.pointerEvents = 'auto';
+    document.getElementById('white-team-btn').style.pointerEvents = 'none';
     document.getElementById('black-team-btn').style.opacity = '1';
-    document.getElementById('black-team-btn').style.pointerEvents = 'auto';
+    document.getElementById('black-team-btn').style.pointerEvents = 'none';
     socket.emit('team selected', {team: 'w', username: null});
     socket.emit('team selected', {team: 'b', username: null});
     board.orientation('white');
@@ -286,6 +275,10 @@ $('#restart-btn').click(function() {
     userTeam = null;
     board.position('start');
     updateStatus();
+    document.getElementById('white-team-btn').style.opacity = '0.6';
+    document.getElementById('white-team-btn').style.pointerEvents = 'auto';
+    document.getElementById('black-team-btn').style.opacity = '0.6';
+    document.getElementById('black-team-btn').style.pointerEvents = 'auto';
     socket.emit('restart', 'start');
 });
 
