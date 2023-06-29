@@ -66,8 +66,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chat message', function(msg) {
-        if (chatMessages.length > 200) {
-            chatMessages = chatMessages.slice(-200);
+        if (chatMessages.length > 150) {
+            chatMessages = chatMessages.slice(-150);
         }
         chatMessages.push(msg);
         io.emit('chat message', msg);
@@ -108,14 +108,6 @@ io.on('connection', (socket) => {
         .catch(err => {
             console.error(err);
         });
-
-        teams = {
-            'w': false,
-            'b': false
-        };
-        // Here we set the game state back to start
-        currentGame = 'start';
-        io.emit('teams update', teams);
     });
 
     socket.on('restart', function(msg) {
