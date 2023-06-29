@@ -51,4 +51,4 @@ Suivez ces étapes pour installer et exécuter le projet :
     nodemon server.js
     ```
 
-Votre application devrait maintenant être en cours d'exécution et accessible à l'adresse [http://localhost:port](http://localhost:port), où "port" est le port sur lequel votre serveur est configuré pour écouter (par exemple, [http://localhost:3000](http://localhost:3000) si votre serveur écoute sur le port 3000).
+Votre application devrait maintenant être en cours d'exécution et accessible à l'adresse [http://localhost:port](http://localhost:port), où "port" est le port sur lequel votre serveur est configuré pour écouter (par exemple, [http://localhost:3000](http://localhost:8080) si votre serveur écoute sur le port 8080).
