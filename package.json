@@ -4,7 +4,8 @@
   "description": "jeu d'échec",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "app": "nodemon server.js",
+    "deploy": "/home/avitale/.fly/bin/flyctl deploy"
   },
   "author": "Arnaud-Hugo",
   "license": "ISC",
@@ -17,6 +18,7 @@
     "dotenv": "^16.2.0",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "firebase-admin": "^11.10.1",
     "mongodb": "^5.5.0",
     "mongoose": "^7.3.0",
     "mongoose-mongodb-errors": "^0.0.2",

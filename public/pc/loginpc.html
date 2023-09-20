@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login page</title>
+    <link rel="website icon" type="png" href="../img/icon/chessicon.png">
+    <link rel="stylesheet" href="/pc/loginpc.css">
+</head>
+    <body>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form id="register-form">
+                <h1>Create Account</h1>
+                <input type="text" id="reg-username" placeholder="Username" required/>
+                <input type="password" id="reg-password" placeholder="Password" required/>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form id="login-form">
+                <h1>Login</h1>
+                <input type="text" id="username" placeholder="Username" required/>
+                <input type="password" id="password" placeholder="Password" required/>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <img src="../img/pic/dame.png" alt="queen" width="100px" height="100px">
+                    <p>To keep connected, please go to login and play chess !</p>
+                    <button class="ghost" id="signIn">Login </button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hey, Friend!</h1>
+                    <img src="../img/pic/pion.png" alt="queen" width="100px" height="100px">
+                    <p>Enter few details and play with other users</p>
+                    <button class="ghost" id="signUp">register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/pc/loginpc.js"></script>
+</body>
+</html>

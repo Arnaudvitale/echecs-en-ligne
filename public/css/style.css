@@ -168,3 +168,10 @@ button:hover {
 .team-container h2 {
     text-align: center;
 }
+
+@media (max-width: 600px) {
+    #myBoard {
+      width: 90%;
+      height: auto;
+    }
+  }

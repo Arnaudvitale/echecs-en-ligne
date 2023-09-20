@@ -1,3 +1,15 @@
+const signUpButton = document.getElementById('signUp');
+const signInButton = document.getElementById('signIn');
+const container = document.getElementById('container');
+
+signUpButton.addEventListener('click', () => {
+	container.classList.add("right-panel-active");
+});
+
+signInButton.addEventListener('click', () => {
+	container.classList.remove("right-panel-active");
+});
+
 document.getElementById("login-form").addEventListener("submit", function(event){
     event.preventDefault();
     logIn(event);
@@ -7,13 +19,6 @@ document.getElementById("register-form").addEventListener("submit", function(eve
     event.preventDefault();
     register(event);
 });
-
-function showError(message, elementId) {
-    const errorElement = document.getElementById(elementId);
-    errorElement.textContent = message;
-    errorElement.previousElementSibling.classList.add('error');
-    errorElement.style.display = 'block';
-}
 
 function logIn(event) {
     event.preventDefault();
@@ -33,11 +38,11 @@ function logIn(event) {
             if (data.message === 'Incorrect username or password') {
                 usernameInput.style.borderColor = 'red';
                 passwordInput.style.borderColor = 'red';
-                showError(data.message, 'login-error');
+                console.log(data.message);
             } else if (data.message === 'User not found') {
                 usernameInput.style.borderColor = 'red';
                 passwordInput.style.borderColor = '';
-                showError(data.message, 'login-error');
+                console.log(data.message);
             }
         } else {
             localStorage.setItem('username', data.username); // Save username in local storage
@@ -54,8 +59,6 @@ function register(event) {
 
     const usernameInput = document.getElementById('reg-username');
     const passwordInput = document.getElementById('reg-password');
-    const successElement = document.getElementById('register-success');
-    const errorElement = document.getElementById('register-error');
     const username = usernameInput.value;
     const password = passwordInput.value;
 
@@ -68,17 +71,12 @@ function register(event) {
     }).then(response => response.json()).then(data => {
         if (data.status === 'error') {
             usernameInput.style.borderColor = 'red';
-            showError(data.message, 'register-error');
             passwordInput.style.borderColor = '';
-            successElement.style.display = 'none';
-            errorElement.style.display = 'block';
         } else {
-            successElement.textContent = `Registered ${username}`;
-            successElement.style.display = 'block';
-            errorElement.style.display = 'none';
             usernameInput.style.borderColor = '';
             passwordInput.value = '';
             usernameInput.value = '';
+            container.classList.remove("right-panel-active");
         }
     });
 }
@@ -88,6 +86,6 @@ window.onload = function() {
     localStorage.setItem('elo', data.elo); // Save Elo in local storage
 
     if (storedUsername) {
-        window.location.href = '/chess.html';
+        window.location.href = '../chess.html';
     }
 };
