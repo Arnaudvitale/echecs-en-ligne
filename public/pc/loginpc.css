@@ -29,10 +29,6 @@ p {
     margin: 20px 0 30px;
 }
 
-span {
-    font-size: 12px;
-}
-
 a {
     color: #333;
     font-size: 14px;
@@ -64,6 +60,10 @@ button:focus {
 button.ghost {
     background-color: transparent;
     border-color: #FFFFFF;
+}
+
+button.ghost:hover {
+    transform: scale(1.1);
 }
 
 form {
