@@ -3,8 +3,6 @@
 body {
   font-size: 24px;
   background: linear-gradient(to bottom, #00b7ff, #641bda);
-  overflow-y: hidden;
-  overflow-x: hidden;
   overflow: hidden;
 }
 
@@ -12,10 +10,6 @@ h1 {
   font-weight: bold;
   font-size: 80px;
   margin: 0;
-}
-
-.container {
-  overflow: hidden;
 }
 
 button {

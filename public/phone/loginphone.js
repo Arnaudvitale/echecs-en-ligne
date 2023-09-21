@@ -1,16 +1,3 @@
-const container = document.getElementById('container');
-const paragraphs = document.querySelectorAll('p');
-
-paragraph.addEventListener('click', () => {
-    if (signInContainer.style.display === 'none') {
-      signInContainer.style.display = 'inline';
-      signUpContainer.style.display = 'none';
-    } else {
-      signInContainer.style.display = 'none';
-      signUpContainer.style.display = 'inline';
-    }
-});
-
 document.getElementById("login-form").addEventListener("submit", function(event){
     event.preventDefault();
     logIn(event);
@@ -89,3 +76,13 @@ window.onload = function() {
         window.location.href = '../chess.html';
     }
 };
+
+document.querySelector(".sign-in-container p").addEventListener("click", function() {
+    document.querySelector(".sign-in-container").style.display = "none";
+    document.querySelector(".sign-up-container").style.display = "block";
+});
+
+document.querySelector(".sign-up-container p").addEventListener("click", function() {
+    document.querySelector(".sign-up-container").style.display = "none";
+    document.querySelector(".sign-in-container").style.display = "block";
+});
