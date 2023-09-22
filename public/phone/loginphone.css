@@ -61,4 +61,5 @@ p {
   font-weight: bold;
   margin-top: 60px;
   text-decoration: underline;
+  cursor: pointer;
 }
