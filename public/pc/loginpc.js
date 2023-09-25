@@ -98,3 +98,22 @@ window.onload = function() {
         window.location.href = '../chess.html';
     }
 };
+
+// Function to toggle password visibility
+function togglePasswordVisibility(event) {
+    const img = event.target;
+    const input = img.previousElementSibling;
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        img.src = '../img/pwd/eye.png';
+    } else {
+        input.type = 'password';
+        img.src = '../img/pwd/closedeye.png';
+    }
+}
+
+// add event listeners to all toggle password visibility images
+document.querySelectorAll('.toggle-password-visibility').forEach(img => {
+    img.addEventListener('click', togglePasswordVisibility);
+});

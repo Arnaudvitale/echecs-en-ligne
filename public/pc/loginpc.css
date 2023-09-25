@@ -223,3 +223,21 @@ input {
 .shake {
   animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
 }
+
+.password-container {
+    position: relative;
+    display: inline-block;
+}
+
+.toggle-password-visibility {
+    position: absolute;
+    right: 15%;
+    top: 56%;
+    transform: translateY(-50%);
+    height: 20px;
+    width: 20px;
+}
+
+.toggle-password-visibility:hover {
+    filter: brightness(0) saturate(100%) invert(29%) sepia(99%) saturate(1360%) hue-rotate(189deg) brightness(99%) contrast(91%);
+}
