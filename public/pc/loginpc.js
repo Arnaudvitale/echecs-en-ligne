@@ -92,9 +92,9 @@ function register(event) {
 
 window.onload = function() {
     const storedUsername = localStorage.getItem('username');
-    localStorage.setItem('elo', data.elo); // Save Elo in local storage
+    const storedElo = localStorage.getItem('elo');
 
-    if (storedUsername) {
+    if (storedUsername && storedElo) {
         window.location.href = '../chess.html';
     }
 };
