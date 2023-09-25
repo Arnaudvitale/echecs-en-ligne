@@ -20,6 +20,11 @@ document.getElementById("register-form").addEventListener("submit", function(eve
     register(event);
 });
 
+function shakeElement(element) {
+    element.classList.add('shake');
+    setTimeout(() => element.classList.remove('shake'), 820);
+  }
+
 function logIn(event) {
     event.preventDefault();
     const usernameInput = document.getElementById('username');
@@ -37,10 +42,13 @@ function logIn(event) {
         if (data.status === 'error') {
             if (data.message === 'Incorrect username or password') {
                 usernameInput.style.borderColor = 'red';
+                shakeElement(usernameInput);
                 passwordInput.style.borderColor = 'red';
+                shakeElement(passwordInput);
                 console.log(data.message);
             } else if (data.message === 'User not found') {
                 usernameInput.style.borderColor = 'red';
+                shakeElement(usernameInput);
                 passwordInput.style.borderColor = '';
                 console.log(data.message);
             }
@@ -72,6 +80,7 @@ function register(event) {
         if (data.status === 'error') {
             usernameInput.style.borderColor = 'red';
             passwordInput.style.borderColor = '';
+            shakeElement(usernameInput);
         } else {
             usernameInput.style.borderColor = '';
             passwordInput.value = '';
