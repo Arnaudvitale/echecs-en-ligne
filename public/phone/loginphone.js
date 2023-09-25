@@ -8,6 +8,18 @@ document.getElementById("register-form").addEventListener("submit", function(eve
     register(event);
 });
 
+function shakeElement(element) {
+    element.classList.add('shake');
+    setTimeout(() => element.classList.remove('shake'), 820);
+}
+
+function addFadeInAnimation(element) {
+    element.classList.add('fade-in');
+    element.addEventListener('animationend', () => {
+        element.classList.remove('fade-in');
+    });
+}
+
 function logIn(event) {
     event.preventDefault();
     const usernameInput = document.getElementById('username');
@@ -25,9 +37,12 @@ function logIn(event) {
         if (data.status === 'error') {
             if (data.message === 'Incorrect username or password') {
                 usernameInput.style.borderColor = 'red';
+                shakeElement(usernameInput);
                 passwordInput.style.borderColor = 'red';
+                shakeElement(passwordInput);
             } else if (data.message === 'User not found') {
                 usernameInput.style.borderColor = 'red';
+                shakeElement(usernameInput);
                 passwordInput.style.borderColor = '';
             }
         } else {
@@ -57,6 +72,7 @@ function register(event) {
     }).then(response => response.json()).then(data => {
         if (data.status === 'error') {
             usernameInput.style.borderColor = 'red';
+            shakeElement(usernameInput);
             passwordInput.style.borderColor = '';
         } else {
             usernameInput.style.borderColor = '';
@@ -80,9 +96,11 @@ window.onload = function() {
 document.querySelector(".sign-in-container p").addEventListener("click", function() {
     document.querySelector(".sign-in-container").style.display = "none";
     document.querySelector(".sign-up-container").style.display = "block";
+    addFadeInAnimation(document.querySelector(".sign-up-container"));
 });
 
 document.querySelector(".sign-up-container p").addEventListener("click", function() {
     document.querySelector(".sign-up-container").style.display = "none";
     document.querySelector(".sign-in-container").style.display = "block";
+    addFadeInAnimation(document.querySelector(".sign-in-container"));
 });
