@@ -26,11 +26,9 @@ function logIn(event) {
             if (data.message === 'Incorrect username or password') {
                 usernameInput.style.borderColor = 'red';
                 passwordInput.style.borderColor = 'red';
-                console.log(data.message);
             } else if (data.message === 'User not found') {
                 usernameInput.style.borderColor = 'red';
                 passwordInput.style.borderColor = '';
-                console.log(data.message);
             }
         } else {
             localStorage.setItem('username', data.username); // Save username in local storage
@@ -64,6 +62,8 @@ function register(event) {
             usernameInput.style.borderColor = '';
             passwordInput.value = '';
             usernameInput.value = '';
+            document.querySelector(".sign-up-container").style.display = "none";
+            document.querySelector(".sign-in-container").style.display = "block";
         }
     });
 }
