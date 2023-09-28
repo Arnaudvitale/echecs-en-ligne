@@ -13,8 +13,10 @@
             <form id="login-form">
                 <h1>Login</h1>
                 <input type="text" id="username" placeholder="Username" required/>
-                <input type="password" id="password" placeholder="Password" required/>
-                <img class="toggle-password-visibility" src="../img/pwd/closedeye.png" style="cursor: pointer;"/>
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="Password" required/>
+                    <img class="toggle-password-visibility" src="../img/pwd/closedeye.png" style="cursor: pointer;"/>
+                </div>
                 <button type="submit">Login</button>
                 <p>don't have an account ?</p>
             </form>
@@ -23,8 +25,10 @@
             <form id="register-form">
                 <h1>Create Account</h1>
                 <input type="text" id="reg-username" placeholder="Username" required/>
-                <input type="password" id="reg-password" placeholder="Password" required/>
-                <img class="toggle-password-visibility" src="../img/pwd/closedeye.png" style="cursor: pointer;"/>
+                <div class="password-container">
+                    <input type="password" id="reg-password" placeholder="Password" required/>
+                    <img class="toggle-password-visibility" src="../img/pwd/closedeye.png" style="cursor: pointer;"/>
+                </div>
                 <button type="submit">Register</button>
                 <p>Already have an account ?</p>
             </form>

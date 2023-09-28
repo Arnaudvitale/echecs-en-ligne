@@ -100,15 +100,20 @@ p {
   animation: fade-in 1.8s forwards;
 }
 
+.password-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
 .toggle-password-visibility {
   position: absolute;
-  right: 18%;
-  top: 51%;
-  transform: translateY(-50%);
+  right: 10px;
+  top: 17%;
   height: 20px;
   width: 20px;
 }
 
 input[type="text"], input[type="password"] {
+  width: 100%;
   padding-right: 30px;
 }
