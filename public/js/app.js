@@ -327,3 +327,7 @@ document.getElementById("logout-btn").addEventListener("click", function() {
         window.location.href = '/index.html';
     });
 });
+
+document.getElementById('myBoard').addEventListener('touchmove', function(e) {
+    e.preventDefault();
+}, { passive: false });

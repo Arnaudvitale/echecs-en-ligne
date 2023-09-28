@@ -241,3 +241,7 @@ input {
 .toggle-password-visibility:hover {
     filter: brightness(0) saturate(100%) invert(29%) sepia(99%) saturate(1360%) hue-rotate(189deg) brightness(99%) contrast(91%);
 }
+
+input[type="text"], input[type="password"] {
+    padding-right: 30px;
+}
