@@ -48,7 +48,7 @@ function logIn(event) {
         } else {
             localStorage.setItem('username', data.username); // Save username in local storage
             localStorage.setItem('elo', data.elo); // Save Elo in local storage
-            window.location.href = '/chess.html';  // Redirect to the chess page
+            window.location.href = '/chessPhone.html';  // Redirect to the chess page
             usernameInput.style.borderColor = '';
             passwordInput.style.borderColor = '';
         }
@@ -89,7 +89,7 @@ window.onload = function() {
     const storedElo = localStorage.getItem('elo');
 
     if (storedUsername && storedElo) {
-        window.location.href = '../chess.html';
+        window.location.href = '../chessPhone.html';
     }
 };
 

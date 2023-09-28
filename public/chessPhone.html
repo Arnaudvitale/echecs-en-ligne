@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess</title>
+    <link rel="website icon" type="png" href="img/icon/chessicon.png">
+    <link rel="stylesheet" href="/css/stylePhone.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+</head>
+    <body>
+        <button id="toggle-chat-btn">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div id="logged-in">
+        <div id="elo-display">ELO: <span id="elo"></span></div>
+        <div id="logged-div">
+            <h2 id="logh2">Logged in as: <span id="username"></span></h2>
+            <button id="logout-btn">Logout</button>
+        </div>
+    </div>
+        <div id="header">
+            <h1>Welcome to Online Chess Game!</h1>
+        </div>
+    <div class="item team-container">
+        <h2>Choose Team</h2>
+        <button id="white-team-btn" class="team-btn">White Team</button>
+        <button id="black-team-btn" class="team-btn">Black Team</button>
+    </div>
+    <div id="status"></div>
+        <div class="item">
+            <div id="myBoard"></div>
+            <button id="restart-btn" class="restart">Restart</button>
+        </div>
+        <div class="item">
+            <div id="chat">
+                <div id="messages"></div>
+                <form id="form">
+                    <input id="input" autocomplete="off" maxlength="150" /><button>Send</button>
+                </form>
+            </div>
+        </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/app.js"></script>
+        <script>
+            $('#toggle-chat-btn').on('click', function() {
+                $('#chat').toggleClass('open');
+                $('#toggle-chat-btn').toggleClass('open');
+            });
+        </script>
+    </body>
+</html>
