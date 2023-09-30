@@ -25,11 +25,13 @@ Voici une description de la structure de base du projet :
 
     - **public/index.html** : Le fichier HTML principal de notre application.
     - **public/chess.html** : Le fichier HTML de notre jeu d'échecs.
+    - **public/chessPhone.html** : Le fichier HTML de notre jeu d'échecs pour mobile.
     - **public/js/app.js** : Notre code JavaScript côté client.
-    - **public/js/login.js** : Notre code JavaScript côté client pour la page de connexion.
+    - **public/js/log.js** : Redirection vers la page de connexion selon si l'utilisateur est sur mobile ou pc.
 
-    - **public/css/style.css** : Nos styles CSS pour le jeu d'échecs.
-    - **public/css/login.css** : Nos styles CSS pour la page de connexion.
+    - **public/css/style.css** : Nos styles CSS pour le jeu d'échecs sur pc.
+    - **public/pc/** : Contient la page de connexion et d'inscription pour pc.
+    - **public/phone/** : Contient la page de connexion et d'inscription pour mobile.
 
 ## Installation
 
@@ -48,7 +50,7 @@ Suivez ces étapes pour installer et exécuter le projet :
 3. **Lancer le serveur :** Enfin, une fois que toutes les dépendances sont installées, vous pouvez lancer le serveur avec la commande `npm start`. Si vous avez configuré le script "start" dans votre `package.json`, il démarrera votre serveur Node.js. Si vous n'avez pas de script "start", vous pouvez démarrer votre serveur en exécutant directement votre fichier `server.js` avec Node.js, comme ceci :
 
     ```
-    nodemon server.js
+    npm run app
     ```
 
 Votre application devrait maintenant être en cours d'exécution et accessible à l'adresse [http://localhost:port](http://localhost:port), où "port" est le port sur lequel votre serveur est configuré pour écouter (par exemple, [http://localhost:8080](http://localhost:8080) si votre serveur écoute sur le port 8080).
