@@ -13,29 +13,27 @@ body {
 #logged-in {
     display: flex;
     flex-direction: column;
-    align-items: center;
     user-select: none;
     margin-bottom: 10px;
 }
 
 #elo-display, #logh2 {
     font-size: 14px;
-    margin: 5px;
 }
 
-#logged-div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#choose-team {
+    margin-top: 40px;
 }
 
 #logout-btn {
     background-color: #f44336;
+    position: absolute;
+    align-self: center;
     color: white;
     padding: 10px 15px;
+    width: 20%;
     border: none;
     border-radius: 5px;
-    margin-top: 5px;
 }
 
 .item {
@@ -44,6 +42,10 @@ body {
 
 .team-container {
     text-align: center;
+    background-color: #fff;
+    border-radius: 5px;
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .team-btn {
@@ -56,7 +58,7 @@ body {
 }
 
 #status {
-    margin: 10px 0;
+    margin: 5px 0;
     text-align: center;
     user-select: none;
 }
