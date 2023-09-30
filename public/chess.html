@@ -12,13 +12,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.css" rel="stylesheet" />
 </head>
 <body>
-    <div id="elo-display">ELO: <span id="elo"></span></div>
-    <div id="logged-in">
-        <h2>Logged in as: <span id="username"></span></h2>
-        <button id="logout-btn">Logout</button>
-    </div>
-    <h1>Welcome to Online Chess Game!</h1>
-    <div id="status"></div>
+    <header>
+        <div id="user">
+            <span id="username"></span>
+            <div id="elo-display">ELO: <span id="elo"></span></div>
+        </div>
+        <h1>Chess Game</h1>
+        <div id="logged-in">
+            <button id="logout-btn">Logout</button>
+        </div>
+    </header>
     <div id="container">
         <div class="item team-container">
             <h2>Choose Team</h2>
@@ -26,6 +29,7 @@
             <button id="black-team-btn" class="team-btn">Black Team</button>
         </div>
         <div class="item">
+            <div id="status"></div>
             <div id="myBoard"></div>
             <button id="restart-btn" class="restart">Restart</button>
         </div>
@@ -33,7 +37,7 @@
             <div id="chat">
                 <div id="messages"></div>
                 <form id="form">
-                    <input id="input" autocomplete="off" maxlength="150" /><button>Send</button>
+                    <input id="input" autocomplete="off" maxlength="150" /><button id="send-btn">Send</button>
                 </form>
             </div>
         </div>
