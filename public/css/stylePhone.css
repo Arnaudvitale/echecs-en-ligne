@@ -38,13 +38,6 @@ body {
     margin-top: 5px;
 }
 
-#header h1 {
-    text-align: center;
-    color: #555;
-    user-select: none;
-    margin: 20px 0;
-}
-
 .item {
     margin-bottom: 20px;
 }
