@@ -157,3 +157,7 @@ button:hover {
     color: #555555;
     user-select: none;
 }
+
+#movesHistory {
+    color: #000000;
+}

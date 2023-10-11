@@ -24,6 +24,7 @@ let numUsers = 0;
 let currentGame = 'start';
 let chatMessages = [];
 let userToSocketId = {};
+let movesHistory = [];
 let teams = {
     'w': false,
     'b': false
@@ -61,7 +62,9 @@ io.on('connection', (socket) => {
             return;
         }
         currentGame = msg;
+        movesHistory.push(msg);
         io.emit('move', msg);
+        io.emit('updateHistory', movesHistory);
         io.emit('move sound');
     });
 
@@ -119,6 +122,7 @@ io.on('connection', (socket) => {
             'b': false
         };
         io.emit('teams update', teams);
+        movesHistory = [];
         io.emit('restart', msg);
         io.emit('teams update', teams);
     });

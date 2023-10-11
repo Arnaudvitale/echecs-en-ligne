@@ -7,6 +7,16 @@ var userTeam = null;
 let whiteTeamPlayer = null;
 let blackTeamPlayer = null;
 
+socket.on('updateHistory', function(movesHistory) {
+    const historyElement = document.getElementById('movesHistory');
+    historyElement.innerHTML = '';
+    movesHistory.forEach(move => {
+        const moveElement = document.createElement('li');
+        moveElement.textContent = move;
+        historyElement.appendChild(moveElement);
+    });
+});
+
 function removeGreySquares() {
     $('#myBoard .square-55d63').css('background', '');
 }
