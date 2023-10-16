@@ -17,6 +17,17 @@ socket.on('updateHistory', function(movesHistory) {
     });
 });
 
+function displayMovesHistory(movesHistory) {
+    var movesList = document.getElementById('movesHistory');
+    movesList.innerHTML = '';
+
+    movesHistory.forEach(function(move, index) {
+        var li = document.createElement('li');
+        li.textContent = `Move ${index + 1}: ${move}`;
+        movesList.appendChild(li);
+    });
+}
+
 function removeGreySquares() {
     $('#myBoard .square-55d63').css('background', '');
 }
@@ -144,6 +155,7 @@ socket.on('init', function(state) {
 
     // initialize userTeam based on localStorage
     userTeam = localStorage.getItem('team');
+    displayMovesHistory(state.movesHistory);
 });
 
 socket.on('game result', function(data) {
@@ -283,6 +295,7 @@ socket.on('restart', function(msg) {
     document.getElementById('white-team-btn').style.pointerEvents = 'none';
     document.getElementById('black-team-btn').style.opacity = '1';
     document.getElementById('black-team-btn').style.pointerEvents = 'none';
+    document.getElementById('movesHistory').innerHTML = '';
     socket.emit('team selected', {team: 'w', username: null});
     socket.emit('team selected', {team: 'b', username: null});
     board.orientation('white');
@@ -299,6 +312,7 @@ $('#restart-btn').click(function() {
     document.getElementById('white-team-btn').style.pointerEvents = 'auto';
     document.getElementById('black-team-btn').style.opacity = '0.6';
     document.getElementById('black-team-btn').style.pointerEvents = 'auto';
+    document.getElementById('movesHistory').innerHTML = '';
     socket.emit('restart', 'start');
 });
 

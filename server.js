@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
     console.log('A user connected. Total users: ', numUsers);
 
     // Send current game state and chat messages
-    socket.emit('init', { game: currentGame, chat: chatMessages, teams: teams });
+    socket.emit('init', { game: currentGame, chat: chatMessages, teams: teams, movesHistory: movesHistory });
 
     socket.on('team selected', function({team, username}) {
         if (!teams[team]) {
@@ -137,8 +137,8 @@ io.on('connection', (socket) => {
             'w': false,
             'b': false
         };
-        io.emit('teams update', teams);
         movesHistory = [];
+        io.emit('teams update', teams);
         io.emit('restart', msg);
         io.emit('teams update', teams);
     });
@@ -157,6 +157,7 @@ io.on('connection', (socket) => {
         if (numUsers == 0) {
             currentGame = 'start';
             chatMessages = [];
+            movesHistory = [];
             teams = {
                 'w': false,
                 'b': false

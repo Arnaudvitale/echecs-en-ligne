@@ -69,6 +69,10 @@ button {
     background-color: #DC3545;
 }
 
+#logout-btn:hover {
+    background-color: #C82333;
+}
+
 #restart-btn {
     background-color: #DC3545;
     width: 80%;
@@ -78,9 +82,12 @@ button {
     font-size: 18px;
 }
 
+#restart-btn:hover {
+    background-color: #C82333;
+}
+
 button:hover {
     background-color: #0069D9;
-    transform: scale(1.05);
 }
 
 /* teams */
@@ -96,6 +103,10 @@ button:hover {
     height: 50px;
     font-size: 15px;
     cursor: pointer;
+}
+
+.team-btn:hover {
+    transform: scale(1.05);
 }
 
 /* Chat */
@@ -161,4 +172,11 @@ button:hover {
 #movesHistory {
     margin-top: 10px;
     color: #000000;
+}
+
+#movesHistoryContainer {
+    margin-top: 10px;
+    border: 2px solid #ccc;
+    height: 30rem;
+    overflow-y: auto;
 }
