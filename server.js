@@ -20,6 +20,22 @@ app.use(session({
     saveUninitialized: false,
 }));
 
+app.get('/chess', function(req, res) {
+    res.sendFile(__dirname + '/public/chess.html');
+});
+
+app.get('/game', function(req, res) {
+    res.sendFile(__dirname + '/public/chessPhone.html');
+});
+
+app.get('/login', function(req, res) {
+    res.sendFile(__dirname + '/public/pc/loginpc.html');
+});
+
+app.get('/login-page', function(req, res) {
+    res.sendFile(__dirname + '/public/phone/loginphone.html');
+});
+
 let numUsers = 0;
 let currentGame = 'start';
 let chatMessages = [];

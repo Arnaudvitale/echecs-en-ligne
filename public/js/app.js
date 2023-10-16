@@ -311,8 +311,7 @@ window.onload = function() {
         usernameElement.textContent = storedUsername;
         eloElement.textContent = storedElo;
     } else {
-        usernameElement.textContent = 'Guest';
-        eloElement.textContent = '0';
+        window.location.href = '/index.html';
     }
 };
 

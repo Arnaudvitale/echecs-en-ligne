@@ -42,6 +42,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/app.js"></script>
         <script>
+            window.history.replaceState(null, null, "/game");
             $('#toggle-chat-btn').on('click', function() {
                 $('#chat').toggleClass('open');
                 $('#toggle-chat-btn').toggleClass('open');
