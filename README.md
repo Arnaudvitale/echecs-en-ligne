@@ -1,6 +1,7 @@
 # Projet d'Échecs en ligne
 
 Ce projet est une application web qui permet aux utilisateurs de jouer aux échecs en ligne.
+![](./public/img/icon/chessicon.png)
 
 ## Structure du Projet
 
