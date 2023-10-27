@@ -176,7 +176,7 @@ button:hover {
 
 #movesHistoryContainer {
     margin-top: 10px;
-    border: 2px solid #ccc;
+    border: 1px solid #ccc;
     height: 30rem;
     overflow-y: auto;
 }
