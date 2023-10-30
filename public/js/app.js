@@ -215,6 +215,7 @@ socket.on('updateHistory', function(movesHistory) {
     });
 });
 
+// game result
 socket.on('game result', function(data) {
     alert(data.message);
     if (data.message.startsWith('Bien joué')) {
