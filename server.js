@@ -73,12 +73,24 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('move', function(msg) {
+    socket.on('move', function(msg, piece, from, to) {
         if (!(teams['w'] === socket.username || teams['b'] === socket.username)) {
             return;
         }
+        let colors = {
+            'w': 'White',
+            'b': 'Black'
+        };
+        let pieces = {
+            'p': 'pawn',
+            'r': 'rook',
+            'n': 'knight',
+            'b': 'bishop',
+            'q': 'queen',
+            'k': 'king'
+        };
         currentGame = msg;
-        movesHistory.push(msg);
+        movesHistory.push(`${colors[piece.color]} ${pieces[piece.type]} from ${from} to ${to}`);
         io.emit('move', msg);
         io.emit('updateHistory', movesHistory);
         io.emit('move sound');

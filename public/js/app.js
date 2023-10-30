@@ -95,6 +95,7 @@ var board = Chessboard('myBoard', {
     onDrop: function(source, target) {
         if (!userTeam) return 'snapback';
         removeGreySquares();
+        var piece = game.get(source);
         var move = game.move({
             from: source,
             to: target,
@@ -102,7 +103,7 @@ var board = Chessboard('myBoard', {
         });
         if (move === null) return 'snapback';
         updateStatus();
-        socket.emit('move', game.fen());
+        socket.emit('move', game.fen(), piece, source, target);
 
         // end game condition
         if (game.game_over()) {
@@ -208,9 +209,9 @@ socket.on('init', function(state) {
 socket.on('updateHistory', function(movesHistory) {
     const historyElement = document.getElementById('movesHistory');
     historyElement.innerHTML = '';
-    movesHistory.forEach(move => {
+    movesHistory.forEach(function(move, index) {
         const moveElement = document.createElement('li');
-        moveElement.textContent = move;
+        moveElement.textContent = `Move ${index + 1}: ${move}`;
         historyElement.appendChild(moveElement);
     });
 });
