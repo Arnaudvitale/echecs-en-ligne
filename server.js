@@ -135,7 +135,7 @@ io.on('connection', (socket) => {
             user.elo = Math.max(user.elo - 10, 0); // Don't let ELO drop below 0
             user.save().then(() => {
                 io.to(userToSocketId[loser]).emit('update elo', { username: loser, elo: user.elo }); // send to correct socket id
-                io.to(userToSocketId[loser]).emit('game result', { message: `Il serait temps de s'améliorer !` });
+                io.to(userToSocketId[loser]).emit('game result', { message: `T'es trop nul c'est une dinguerie. RIP BOZO 😂` });
             });
         })
         .catch(err => {

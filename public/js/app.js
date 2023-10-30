@@ -2,6 +2,8 @@ var socket = io();
 var game = new Chess();
 var moveSound = new Audio('../sound/move.mp3');
 var kingInCheckSound = new Audio('../sound/cry.mp3');
+var winnerSound = new Audio('../sound/win.mp3');
+var loserSound = new Audio('../sound/lose.mp3');
 var whiteSquareGrey = '#a9a9a9';
 var blackSquareGrey = '#696969';
 var userTeam = null;
@@ -226,9 +228,24 @@ socket.on('updateHistory', function(movesHistory) {
 
 // game result
 socket.on('game result', function(data) {
-    alert(data.message);
+    // Show the SweetAlert message
+    swal({
+        title: data.message,
+        buttons: {
+            confirm: {
+                text: 'OK',
+                value: true,
+                visible: true,
+                className: 'btn btn-primary',
+                closeModal: true
+            }
+        }
+    });
     if (data.message.startsWith('Bien joué')) {
+        winnerSound.play().catch(error => console.log('Error playing sound:', error));
         realisticConfetti();
+    } else {
+        loserSound.play().catch(error => console.log('Error playing sound:', error));
     }
 });
 
@@ -336,6 +353,8 @@ socket.on('restart', function(msg) {
     whiteTeamPlayer = null;
     blackTeamPlayer = null;
     userTeam = null;
+    winnerSound.pause();
+    loserSound.pause();
     localStorage.removeItem('whiteTeamPlayer');
     localStorage.removeItem('blackTeamPlayer');
     localStorage.removeItem('team');
