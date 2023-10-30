@@ -107,7 +107,7 @@ io.on('connection', (socket) => {
             user.elo = user.elo + 10;
             user.save().then(() => {
                 io.to(userToSocketId[winner]).emit('update elo', { username: winner, elo: user.elo }); // send to correct socket id
-                io.to(userToSocketId[winner]).emit('game result', { message: `Bien joué ${winner}! T'es solide!` });
+                io.to(userToSocketId[winner]).emit('game result', { message: `Bien joué ${winner} ! T'es solide !` });
             });
         })
         .catch(err => {
@@ -123,7 +123,7 @@ io.on('connection', (socket) => {
             user.elo = Math.max(user.elo - 10, 0); // Don't let ELO drop below 0
             user.save().then(() => {
                 io.to(userToSocketId[loser]).emit('update elo', { username: loser, elo: user.elo }); // send to correct socket id
-                io.to(userToSocketId[loser]).emit('game result', { message: `Bien guez, lâche pas les études.` });
+                io.to(userToSocketId[loser]).emit('game result', { message: `Il serait temps de s'améliorer !` });
             });
         })
         .catch(err => {
