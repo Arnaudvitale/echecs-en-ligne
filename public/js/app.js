@@ -1,6 +1,7 @@
 var socket = io();
 var game = new Chess();
 var moveSound = new Audio('../sound/move.mp3');
+var kingInCheckSound = new Audio('../sound/cry.mp3');
 var whiteSquareGrey = '#a9a9a9';
 var blackSquareGrey = '#696969';
 var userTeam = null;
@@ -17,6 +18,13 @@ function displayMovesHistory(movesHistory) {
         li.textContent = `Move ${index + 1}: ${move}`;
         movesList.appendChild(li);
     });
+}
+
+// check if king is in check and play sound
+function isKingInCheck() {
+    if (game.in_check()) {
+        kingInCheckSound.play().catch(error => console.log('Error playing sound:', error));
+    }
 }
 
 // confetti visual effect
@@ -317,6 +325,7 @@ socket.on('move', function(msg) {
         board.orientation('black');
     }
     updateStatus();
+    isKingInCheck();
 });
 
 // restart game
