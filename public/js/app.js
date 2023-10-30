@@ -301,10 +301,12 @@ socket.on('update elo', function(data) {
     }
 });
 
+// move sound
 socket.on('move sound', function() {
     moveSound.play().catch(error => console.log('Error playing sound:', error));
 });
 
+// make a move
 socket.on('move', function(msg) {
     game.load(msg);
     board.position(game.fen());
@@ -316,6 +318,7 @@ socket.on('move', function(msg) {
     updateStatus();
 });
 
+// restart game
 socket.on('restart', function(msg) {
     game = new Chess();
     board.position(game.fen());
@@ -347,6 +350,7 @@ inputField.addEventListener('input', function() {
     }
 });
 
+// message list
 $('form').submit(function(e) {
     e.preventDefault();
     const username = localStorage.getItem('username');
