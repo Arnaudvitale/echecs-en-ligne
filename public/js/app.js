@@ -318,6 +318,7 @@ socket.on('connect', function() {
     }
 });
 
+// update elo
 socket.on('update elo', function(data) {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername === data.username) {
