@@ -180,6 +180,6 @@ button:hover {
 #movesHistoryContainer {
     margin-top: 10px;
     border: 1px solid #ccc;
-    height: 30rem;
+    height: 35rem;
     overflow-y: auto;
 }
