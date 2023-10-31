@@ -364,9 +364,57 @@ socket.on('restart', function(msg) {
     document.getElementById('black-team-btn').style.opacity = '1';
     document.getElementById('black-team-btn').style.pointerEvents = 'none';
     document.getElementById('movesHistory').innerHTML = '';
+    document.getElementById('restart-btn').style.opacity = '1';
+    document.getElementById('restart-btn').style.pointerEvents = 'auto';
     socket.emit('team selected', {team: 'w', username: null});
     socket.emit('team selected', {team: 'b', username: null});
     board.orientation('white');
+});
+
+socket.on('promptRestart', function(msg) {
+    swal({
+        title: `${msg.username} veut relancer la partie. Acceptes-tu ?`,
+        buttons: {
+            cancel: {
+                text: 'No',
+                value: false,
+                visible: true,
+                className: 'btn btn-danger',
+                closeModal: true
+            },
+            confirm: {
+                text: 'Yes',
+                value: true,
+                visible: true,
+                className: 'btn btn-primary',
+                closeModal: true
+            }
+        }
+    }).then((value) => {
+        if (value) {
+            socket.emit('restart', game.fen());
+        } else {
+            socket.emit('responseRestart', { username: msg.username });
+        }
+    });
+});
+
+socket.on('responseRestart', function(msg) {
+    swal({
+        title: `${msg.username} a refusé de relancer la partie.`,
+        buttons: {
+            confirm: {
+                text: 'OK',
+                value: true,
+                visible: true,
+                className: 'btn btn-primary',
+                closeModal: true
+            }
+        }
+    }).then(() => {
+        document.getElementById('restart-btn').style.opacity = '1';
+        document.getElementById('restart-btn').style.pointerEvents = 'auto';
+    });
 });
 /* End Socket */
 
@@ -401,18 +449,9 @@ socket.on('chat message', function(msg) {
 
 // restart game
 $('#restart-btn').click(function() {
-    game = new Chess();
-    whiteTeamPlayer = null;
-    blackTeamPlayer = null;
-    userTeam = null;
-    board.position('start');
-    updateStatus();
-    document.getElementById('white-team-btn').style.opacity = '0.6';
-    document.getElementById('white-team-btn').style.pointerEvents = 'auto';
-    document.getElementById('black-team-btn').style.opacity = '0.6';
-    document.getElementById('black-team-btn').style.pointerEvents = 'auto';
-    document.getElementById('movesHistory').innerHTML = '';
-    socket.emit('restart', 'start');
+    socket.emit('requestRestart', localStorage.getItem('username'));
+    document.getElementById('restart-btn').style.opacity = '0.6';
+    document.getElementById('restart-btn').style.pointerEvents = 'none';
 });
 
 // on page refresh

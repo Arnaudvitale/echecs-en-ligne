@@ -143,6 +143,15 @@ io.on('connection', (socket) => {
         });
     });
 
+    socket.on('requestRestart', function() {
+        let otherPlayer = teams['w'] === socket.username ? teams['b'] : teams['w'];
+        io.to(userToSocketId[otherPlayer]).emit('promptRestart', { username: socket.username });
+    });
+
+    socket.on('responseRestart', function({ username }) {
+        io.to(userToSocketId[username]).emit('responseRestart', { username: socket.username });
+    });
+
     socket.on('restart', function(msg) {
         currentGame = msg;
         teams = {
