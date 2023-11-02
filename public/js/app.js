@@ -306,6 +306,9 @@ socket.on('teams update', function(teams) {
     } else {
         localStorage.removeItem('blackTeamPlayer');
     }
+    if (whiteTeamPlayer && blackTeamPlayer) {
+        document.getElementById('two-players').style.display = 'block';
+    }
     updateStatus();
 });
 
@@ -366,6 +369,7 @@ socket.on('restart', function(msg) {
     document.getElementById('movesHistory').innerHTML = '';
     document.getElementById('restart-btn').style.opacity = '1';
     document.getElementById('restart-btn').style.pointerEvents = 'auto';
+    document.getElementById('two-players').style.display = 'none';
     socket.emit('team selected', {team: 'w', username: null});
     socket.emit('team selected', {team: 'b', username: null});
     board.orientation('white');
@@ -449,9 +453,13 @@ socket.on('chat message', function(msg) {
 
 // restart game
 $('#restart-btn').click(function() {
-    socket.emit('requestRestart', localStorage.getItem('username'));
-    document.getElementById('restart-btn').style.opacity = '0.6';
-    document.getElementById('restart-btn').style.pointerEvents = 'none';
+    if (localStorage.getItem('blackTeamPlayer') === null || localStorage.getItem('whiteTeamPlayer') === null) {
+        socket.emit('restart', game.fen());
+    } else {
+        socket.emit('requestRestart', localStorage.getItem('username'));
+        document.getElementById('restart-btn').style.opacity = '0.6';
+        document.getElementById('restart-btn').style.pointerEvents = 'none';
+    }
 });
 
 // on page refresh

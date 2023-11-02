@@ -82,6 +82,10 @@ button {
     font-size: 18px;
 }
 
+#two-players {
+    display: none;
+}
+
 #restart-btn:hover {
     background-color: #C82333;
 }

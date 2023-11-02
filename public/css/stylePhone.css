@@ -84,6 +84,10 @@ body {
     width: 40%;
 }
 
+#two-players {
+    display: none;
+}
+
 #chat {
     background-color: white;
     border-radius: 5px;
