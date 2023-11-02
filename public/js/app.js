@@ -377,7 +377,7 @@ socket.on('restart', function(msg) {
 
 socket.on('promptRestart', function(msg) {
     swal({
-        title: `${msg.username} veut relancer la partie. Acceptes-tu ?`,
+        title: `${msg.username} wants to restart the game. Do you accept ?`,
         buttons: {
             cancel: {
                 text: 'No',
@@ -405,7 +405,7 @@ socket.on('promptRestart', function(msg) {
 
 socket.on('responseRestart', function(msg) {
     swal({
-        title: `${msg.username} a refusé de relancer la partie.`,
+        title: `${msg.username} refused to restart the game.`,
         buttons: {
             confirm: {
                 text: 'OK',
