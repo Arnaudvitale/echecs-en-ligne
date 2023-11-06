@@ -164,6 +164,11 @@ io.on('connection', (socket) => {
         io.emit('teams update', teams);
     });
 
+    // reset the game when restarting
+    socket.on('init', function() {
+        currentGame = 'start';
+    });
+
     socket.on('disconnect', () => {
         numUsers--;
         console.log('------------------');

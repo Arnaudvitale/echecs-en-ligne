@@ -20,6 +20,18 @@ function displayMovesHistory(movesHistory) {
         li.textContent = `Move ${index + 1}: ${move}`;
         movesList.appendChild(li);
     });
+
+    if (game.in_check()) {
+        var li = document.createElement('li');
+        li.textContent = `${moveKingColor} King in check`;
+        movesList.appendChild(li);
+    }
+
+    if (game.game_over()) {
+        var li = document.createElement('li');
+        li.textContent = 'Game over';
+        movesList.appendChild(li);
+    }
 }
 
 // check if king is in check and play sound
@@ -217,13 +229,27 @@ socket.on('init', function(state) {
 });
 
 socket.on('updateHistory', function(movesHistory) {
-    const historyElement = document.getElementById('movesHistory');
-    historyElement.innerHTML = '';
-    movesHistory.forEach(function(move, index) {
-        const moveElement = document.createElement('li');
-        moveElement.textContent = `Move ${index + 1}: ${move}`;
-        historyElement.appendChild(moveElement);
-    });
+        var movesList = document.getElementById('movesHistory');
+        var moveKingColor = game.turn() === 'w' ? 'White' : 'Black';
+        movesList.innerHTML = '';
+
+        movesHistory.forEach(function(move, index) {
+            var li = document.createElement('li');
+            li.textContent = `Move ${index + 1}: ${move}`;
+            movesList.appendChild(li);
+        });
+
+        if (game.in_check()) {
+            var li = document.createElement('li');
+            li.textContent = `${moveKingColor} King in check`;
+            movesList.appendChild(li);
+        }
+
+        if (game.game_over()) {
+            var li = document.createElement('li');
+            li.textContent = 'Game over';
+            movesList.appendChild(li);
+        }
 });
 
 // game result
@@ -241,12 +267,13 @@ socket.on('game result', function(data) {
             }
         }
     });
-    if (data.message.startsWith('Bien joué')) {
+    if (data.message.startsWith('Wow')) {
         winnerSound.play().catch(error => console.log('Error playing sound:', error));
         realisticConfetti();
     } else {
         loserSound.play().catch(error => console.log('Error playing sound:', error));
     }
+    document.getElementById('two-players').style.display = 'none';
 });
 
 socket.on('team selected', function({team, username}) {
@@ -372,6 +399,7 @@ socket.on('restart', function(msg) {
     document.getElementById('two-players').style.display = 'none';
     socket.emit('team selected', {team: 'w', username: null});
     socket.emit('team selected', {team: 'b', username: null});
+    socket.emit('init');
     board.orientation('white');
 });
 
@@ -453,7 +481,7 @@ socket.on('chat message', function(msg) {
 
 // restart game
 $('#restart-btn').click(function() {
-    if (localStorage.getItem('blackTeamPlayer') === null || localStorage.getItem('whiteTeamPlayer') === null) {
+    if (localStorage.getItem('blackTeamPlayer') === null || localStorage.getItem('whiteTeamPlayer') === null || game.game_over()) {
         socket.emit('restart', game.fen());
     } else {
         socket.emit('requestRestart', localStorage.getItem('username'));
