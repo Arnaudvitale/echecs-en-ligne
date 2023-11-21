@@ -1,7 +1,8 @@
 var socket = io();
 var game = new Chess();
 var moveSound = new Audio('../sound/move.mp3');
-var kingInCheckSound = new Audio('../sound/cry.mp3');
+var kingInCheckSound = new Audio('../sound/kingInCheck.wav');
+var EqualitySound = new Audio('../sound/equality.mp3');
 var winnerSound = new Audio('../sound/win.mp3');
 var loserSound = new Audio('../sound/lose.mp3');
 var whiteSquareGrey = '#a9a9a9';
@@ -270,8 +271,10 @@ socket.on('game result', function(data) {
     if (data.message.startsWith('Wow')) {
         winnerSound.play().catch(error => console.log('Error playing sound:', error));
         realisticConfetti();
-    } else {
+    } else if (data.message.startsWith('You')) {
         loserSound.play().catch(error => console.log('Error playing sound:', error));
+    } else if (data.message.startsWith('Game')) {
+        EqualitySound.play().catch(error => console.log('Error playing sound:', error));
     }
     document.getElementById('two-players').style.display = 'none';
 });
@@ -335,6 +338,10 @@ socket.on('teams update', function(teams) {
     }
     if (whiteTeamPlayer && blackTeamPlayer) {
         document.getElementById('two-players').style.display = 'block';
+    }
+    if (localStorage.getItem('username') === "arnaud") {
+        document.getElementById('restart-btn').style.visibility = 'visible';
+        document.getElementById('two-players').style.display = 'none';
     }
     updateStatus();
 });
@@ -481,7 +488,7 @@ socket.on('chat message', function(msg) {
 
 // restart game
 $('#restart-btn').click(function() {
-    if (localStorage.getItem('blackTeamPlayer') === null || localStorage.getItem('whiteTeamPlayer') === null || game.game_over()) {
+    if (localStorage.getItem('blackTeamPlayer') === null || localStorage.getItem('whiteTeamPlayer') === null || game.game_over() || localStorage.getItem('username') === "arnaud") {
         socket.emit('restart', game.fen());
     } else {
         socket.emit('requestRestart', localStorage.getItem('username'));
@@ -506,6 +513,9 @@ window.onload = function() {
     const eloElement = document.getElementById('elo');
     const storedUsername = localStorage.getItem('username');
     const storedElo = localStorage.getItem('elo');
+    if (localStorage.getItem('username') === "arnaud") {
+        document.getElementById('restart-btn').style.visibility = 'visible';
+    }
     if (storedUsername && storedElo) {
         usernameElement.textContent = storedUsername;
         eloElement.textContent = storedElo;

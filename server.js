@@ -107,6 +107,7 @@ io.on('connection', (socket) => {
     socket.on('end game', function({ winner, loser }) {
 
         if (winner === null && loser === null) {
+            io.emit('game result', { message: `Game ended in a draw!` });
             return;
         }
 
