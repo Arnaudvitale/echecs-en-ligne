@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Team</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel = "stylesheet" href = "/css/devPage.css">
+</head>
+<body>
+    <div class="dev">login page</div>
+    <div class="container">
+        <h1 class="text-center mt-5">People Who Worked on This Project</h1>
+        <img src="img/pic/chessImg.png" id="chess" class="mx-auto d-block" width="180px" height="174px" oncontextmenu="return false;" draggable="false">
+        <ul class="list-group mt-5">
+            <li class="list-group-item" id="first-pers">Arnaud</li>
+            <li class="list-group-item" id="second-pers">Nathan</li>
+        </ul>
+    </div>
+    <script>
+        // Select the elements
+        var firstPerson = document.getElementById('first-pers');
+        var secondPerson = document.getElementById('second-pers');
+
+        // Define URLs for redirection
+        var urlForFirstPerson = 'https://github.com/Arnaudvitale';
+        var urlForSecondPerson = 'https://github.com/Nathn';
+
+        // Add click event listeners
+        firstPerson.addEventListener('click', function() {
+            window.open(urlForFirstPerson, '_blank'); // in a new tab
+        });
+
+        secondPerson.addEventListener('click', function() {
+            window.open(urlForSecondPerson, '_blank'); // in a new tab
+        });
+
+        // redirect to login page
+        document.querySelector(".dev").addEventListener("click", function() {
+            window.location.href = 'index.html';
+        });
+
+        window.history.replaceState(null, null, "/about");
+    </script>
+</body>
+</html>

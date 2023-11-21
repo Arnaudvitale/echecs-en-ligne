@@ -117,3 +117,7 @@ function togglePasswordVisibility(event) {
 document.querySelectorAll('.toggle-password-visibility').forEach(img => {
     img.addEventListener('click', togglePasswordVisibility);
 });
+
+document.querySelector(".dev").addEventListener("click", function() {
+    window.location.href = '../devPage.html';
+});

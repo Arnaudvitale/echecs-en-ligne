@@ -36,6 +36,10 @@ app.get('/login-page', function(req, res) {
     res.sendFile(__dirname + '/public/phone/loginphone.html');
 });
 
+app.get('/about', function(req, res) {
+    res.sendFile(__dirname + '/public/devPage.html');
+});
+
 let numUsers = 0;
 let currentGame = 'start';
 let chatMessages = [];
