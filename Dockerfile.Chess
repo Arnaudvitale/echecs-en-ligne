@@ -1,0 +1,11 @@
+FROM node:latest
+
+# Répertoire de travail
+
+WORKDIR /ChessApp
+
+# Copier le reste des fichiers dans le répertoire de travail
+COPY . .
+
+# Lancer l'application
+CMD ["sh", "-c", "npm install && npm run app"]

@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.Chess
+    container_name: chess-app
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/ChessApp
