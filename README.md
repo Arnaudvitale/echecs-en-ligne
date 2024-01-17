@@ -63,7 +63,7 @@ D'abord lancez docker, puis dans le terminal pour lancer :
 ```
 docker compose up
 ```
-Pour le rebuilb :
+Pour le rebuild :
 ```
 docker compose up --build
 ```
