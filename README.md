@@ -37,7 +37,7 @@ Voici une description de la structure de base du projet :
 
 Suivez ces étapes pour installer et exécuter le projet :
 
-1. **Installer Node.js et npm :** [https://nodejs.org/](https://nodejs.org/).
+1. **Installer Node.js et Docker :** [Node](https://nodejs.org/), [Docker](https://www.docker.com/products/docker-desktop).
 
 2. **Installer les dépendances du projet :**
 
@@ -56,3 +56,15 @@ Suivez ces étapes pour installer et exécuter le projet :
     ```
 
 Votre application devrait maintenant être en cours d'exécution et accessible à l'adresse [http://localhost:port](http://localhost:port), où "port" est le port sur lequel votre serveur est configuré pour écouter (par exemple, [http://localhost:8080](http://localhost:8080) si votre serveur écoute sur le port 8080, ce qui est le cas ici).
+
+4. **Si vous voulez utiliser Docker :**
+
+D'abord lancez docker, puis dans le terminal pour lancer :
+```
+docker compose up
+```
+Pour le rebuilb :
+```
+docker compose up --build
+```
+*n'oubliez pas de bien supprimer vos builds et vos containers quand vous avez fini de l'utiliser*
