@@ -12,14 +12,10 @@
     <button class="about-btn" id="dev-link">About</button>
 
     <div class="container" id="container">
-        <div class="tabs">
-            <button class="tab-btn active" id="tab-signin-btn">Sign In</button>
-            <button class="tab-btn" id="tab-signup-btn">Register</button>
-        </div>
-
-        <div class="form-panel" id="signin-panel">
-            <div class="panel-icon"><i class="fas fa-chess-queen"></i></div>
+        <!-- Sign In -->
+        <div class="form-container sign-in-container">
             <form id="login-form" novalidate>
+                <h1>Sign In</h1>
                 <div class="input-group">
                     <i class="fas fa-user input-icon"></i>
                     <input type="text" id="username" placeholder="Username" autocomplete="username" required />
@@ -35,8 +31,8 @@
             </form>
         </div>
 
-        <div class="form-panel" id="signup-panel" style="display:none">
-            <div class="panel-icon"><i class="fas fa-chess-pawn"></i></div>
+        <!-- Sign Up -->
+        <div class="form-container sign-up-container">
             <form id="register-form" novalidate>
                 <div class="input-group">
                     <i class="fas fa-user input-icon"></i>
@@ -53,11 +49,29 @@
             </form>
         </div>
 
-        <div class="guest-row">
-            <button id="guest-btn" class="btn-guest">
-                <i class="fas fa-user-secret"></i> Continue as Guest
-            </button>
+        <!-- Overlay -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <div class="overlay-icon"><i class="fas fa-chess-queen"></i></div>
+                    <h1>Welcome Back</h1>
+                    <p>Already have an account?<br>Sign in and play.</p>
+                    <button class="btn-ghost" id="signIn">Sign In</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <div class="overlay-icon"><i class="fas fa-chess-pawn"></i></div>
+                    <h1>Join the Game</h1>
+                    <p>No account yet?<br>Create one and start playing.</p>
+                    <button class="btn-ghost" id="signUp">Register</button>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div class="guest-fixed">
+        <button id="guest-btn" class="btn-guest">
+            <i class="fas fa-user-secret"></i> Continue as Guest
+        </button>
     </div>
 
     <script src="/pc/loginpc.js"></script>

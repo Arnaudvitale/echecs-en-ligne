@@ -166,6 +166,30 @@ form {
 .btn-primary:hover  { filter: brightness(1.1); }
 .btn-primary:active { transform: scale(0.97); }
 
+.guest-row {
+    padding: 0 20px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-guest {
+    background: rgba(100,116,139,0.08);
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+.btn-guest:hover { background: rgba(100,116,139,0.15); }
+
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     20%      { transform: translateX(-6px); }

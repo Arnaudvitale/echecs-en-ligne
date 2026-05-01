@@ -1,19 +1,14 @@
-function switchToSignIn() {
-    document.getElementById('signin-panel').style.display = 'flex';
-    document.getElementById('signup-panel').style.display = 'none';
-    document.getElementById('tab-signin-btn').classList.add('active');
-    document.getElementById('tab-signup-btn').classList.remove('active');
-}
+var signUpButton = document.getElementById('signUp');
+var signInButton = document.getElementById('signIn');
+var container = document.getElementById('container');
 
-function switchToSignUp() {
-    document.getElementById('signin-panel').style.display = 'none';
-    document.getElementById('signup-panel').style.display = 'flex';
-    document.getElementById('tab-signup-btn').classList.add('active');
-    document.getElementById('tab-signin-btn').classList.remove('active');
-}
+signUpButton.addEventListener('click', function() {
+    container.classList.add('right-panel-active');
+});
 
-document.getElementById('tab-signin-btn').addEventListener('click', switchToSignIn);
-document.getElementById('tab-signup-btn').addEventListener('click', switchToSignUp);
+signInButton.addEventListener('click', function() {
+    container.classList.remove('right-panel-active');
+});
 
 document.getElementById('login-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -79,7 +74,7 @@ function register() {
             setError(usernameInput, false);
             usernameInput.value = '';
             passwordInput.value = '';
-            switchToSignIn();
+            container.classList.remove('right-panel-active');
         }
     });
 }

@@ -80,9 +80,8 @@ h1 {
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-shrink: 0;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
-    min-width: 120px;
-    justify-content: flex-end;
 }
 
 #logout-btn:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
@@ -154,11 +153,30 @@ main {
     border-color: var(--accent);
 }
 
+.game-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
 .game-card-name {
     font-size: 15px;
     font-weight: 700;
     color: var(--text);
 }
+
+.player-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.badge-empty { background: rgba(34,197,94,0.12); color: #16a34a; }
+.badge-half  { background: rgba(234,179,8,0.15);  color: #b45309; }
+.badge-full  { background: rgba(239,68,68,0.12);  color: #dc2626; }
 
 .game-card-players {
     display: flex;

@@ -72,9 +72,11 @@ h1 {
 }
 
 #logged-in {
-    min-width: 140px;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
 #logout-btn {

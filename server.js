@@ -41,6 +41,7 @@ function makeGame(name, createdBy) {
         name:         name || ('Game #' + gameCounter++),
         fen:          'start',
         teams:        { w: null, b: null },
+        firstTeam:    null,
         movesHistory: [],
         chat:         [],
         socketToUser: {},
@@ -104,7 +105,15 @@ io.on('connection', (socket) => {
         if (g.teams[team]) return;
         g.teams[team] = username;
         g.userToSocket[username] = socket.id;
+        if (g.firstTeam === null) g.firstTeam = team;
         io.to(gameId).emit('teams update', g.teams);
+        if (g.teams.w && g.teams.b) {
+            const startFen = g.firstTeam === 'b'
+                ? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1'
+                : 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+            g.fen = startFen;
+            io.to(gameId).emit('game start', { fen: startFen });
+        }
         broadcastLobby();
     });
 
@@ -177,6 +186,7 @@ io.on('connection', (socket) => {
         if (!g) return;
         g.fen          = 'start';
         g.teams        = { w: null, b: null };
+        g.firstTeam    = null;
         g.movesHistory = [];
         g.userToSocket = {};
         io.to(gameId).emit('teams update', g.teams);

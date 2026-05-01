@@ -8,7 +8,7 @@ window.addEventListener('load', function() {
     var boardEl = document.getElementById('myBoard');
     if (boardEl && boardEl.parentElement) {
         var pw = boardEl.parentElement.offsetWidth;
-        boardEl.style.width = (pw > 64 ? Math.min(pw - 32, 600) : 480) + 'px';
+        boardEl.style.width = (pw > 64 ? Math.min(pw - 32, 480) : 480) + 'px';
     }
 
     board = Chessboard('myBoard', {

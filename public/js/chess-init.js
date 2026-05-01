@@ -6,7 +6,8 @@ var isGuest = localStorage.getItem('isGuest') === 'true';
 
 /* --- Sélection d'équipe --- */
 document.getElementById('white-team-btn').addEventListener('click', function() {
-    if (userTeam || isGuest) return;
+    if (isGuest) return;
+    if (userTeam) return;
     userTeam = 'w';
     this.style.opacity       = '0.6';
     this.style.pointerEvents = 'none';
@@ -17,7 +18,8 @@ document.getElementById('white-team-btn').addEventListener('click', function() {
 });
 
 document.getElementById('black-team-btn').addEventListener('click', function() {
-    if (userTeam || isGuest) return;
+    if (isGuest) return;
+    if (userTeam) return;
     userTeam = 'b';
     this.style.opacity       = '0.6';
     this.style.pointerEvents = 'none';
