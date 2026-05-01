@@ -30,11 +30,15 @@ function renderGames(games) {
         var badgeClass = count === 2 ? 'badge-full' : count === 1 ? 'badge-half' : 'badge-empty';
         var badgeLabel = count === 2 ? '2/2 Full' : count + '/2';
 
+        var statusClass = g.inProgress ? 'status-playing' : 'status-waiting';
+        var statusLabel = g.inProgress ? 'En cours' : 'En attente';
+
         card.innerHTML =
             '<div class="game-card-header">' +
                 '<div class="game-card-name">' + g.name + '</div>' +
                 '<span class="player-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
             '</div>' +
+            '<div class="game-status ' + statusClass + '">' + statusLabel + '</div>' +
             '<div class="game-card-players">' +
                 '<div class="player-slot"><i class="fa-solid fa-chess-king" style="color:#6366f1"></i> White: ' + wName + '</div>' +
                 '<div class="player-slot"><i class="fa-solid fa-chess-king" style="color:#0f172a"></i> Black: ' + bName + '</div>' +

@@ -178,6 +178,31 @@ main {
 .badge-half  { background: rgba(234,179,8,0.15);  color: #b45309; }
 .badge-full  { background: rgba(239,68,68,0.12);  color: #dc2626; }
 
+.game-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.game-status::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.status-playing        { color: #16a34a; }
+.status-playing::before  { background: #22c55e; animation: pulse 1.5s infinite; }
+.status-waiting        { color: var(--muted); }
+.status-waiting::before  { background: #94a3b8; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.35; }
+}
+
 .game-card-players {
     display: flex;
     flex-direction: column;

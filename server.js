@@ -58,7 +58,7 @@ function makeGame(name, createdBy) {
 }
 
 function gameSummary(g) {
-    return { id: g.id, name: g.name, white: g.teams.w, black: g.teams.b, createdBy: g.createdBy };
+    return { id: g.id, name: g.name, white: g.teams.w, black: g.teams.b, createdBy: g.createdBy, inProgress: g.fen !== null };
 }
 
 function broadcastLobby() {
