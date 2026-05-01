@@ -12,7 +12,6 @@
 
 socket.on('init', function(state) {
     game.load(state.game);
-    board.position(state.game);
 
     var messagesEl = document.getElementById('messages');
     if (messagesEl) messagesEl.innerHTML = '';
@@ -29,6 +28,15 @@ socket.on('init', function(state) {
 
     userTeam = localStorage.getItem('team');
     displayMovesHistory(state.movesHistory);
+
+    function applyToBoard() {
+        board.position(state.game);
+        if (userTeam === 'b') board.orientation('black');
+        else board.orientation('white');
+        updateStatus();
+    }
+    if (board) { applyToBoard(); }
+    else { window.addEventListener('load', applyToBoard); }
 });
 
 socket.on('teams update', function(teams) {
@@ -106,6 +114,8 @@ socket.on('game not found', function() {
 socket.on('game start', function(data) {
     game.load(data.fen);
     board.position(game.fen());
+    if (userTeam === 'b') board.orientation('black');
+    else board.orientation('white');
     updateStatus();
     isKingInCheck();
 });
