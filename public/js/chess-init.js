@@ -1,10 +1,5 @@
-/* =============================================================
-   Chess App — Initialisation & Event Listeners DOM
-   ============================================================= */
-
 var isGuest = localStorage.getItem('isGuest') === 'true';
 
-/* --- Sélection d'équipe --- */
 document.getElementById('white-team-btn').addEventListener('click', function() {
     if (isGuest) return;
     if (userTeam) return;
@@ -29,7 +24,6 @@ document.getElementById('black-team-btn').addEventListener('click', function() {
     board.orientation('black');
 });
 
-/* --- Déconnexion --- */
 document.getElementById('logout-btn').addEventListener('click', function() {
     fetch('/logout', { method: 'GET' }).then(function() {
         ['username', 'whiteTeamPlayer', 'blackTeamPlayer', 'team', 'elo', 'isGuest'].forEach(function(k) {
@@ -39,7 +33,6 @@ document.getElementById('logout-btn').addEventListener('click', function() {
     });
 });
 
-/* --- Bouton Lobby --- */
 var lobbyBtn = document.getElementById('lobby-btn');
 if (lobbyBtn) {
     lobbyBtn.addEventListener('click', function() {
@@ -48,11 +41,10 @@ if (lobbyBtn) {
     });
 }
 
-/* --- Bouton Restart --- */
 document.getElementById('restart-btn').addEventListener('click', function() {
     var noOpponent = !localStorage.getItem('blackTeamPlayer') || !localStorage.getItem('whiteTeamPlayer');
     if (noOpponent || game.game_over() || localStorage.getItem('username') === 'arnaud') {
-        socket.emit('restart', { fen: game.fen(), gameId: gameId });
+        socket.emit('restart', { gameId: gameId });
     } else {
         socket.emit('requestRestart', { username: localStorage.getItem('username'), gameId: gameId });
         this.style.opacity       = '0.6';
@@ -60,7 +52,6 @@ document.getElementById('restart-btn').addEventListener('click', function() {
     }
 });
 
-/* --- Nettoyage avant fermeture --- */
 window.addEventListener('beforeunload', function() {
     var username = localStorage.getItem('username');
     if (localStorage.getItem('whiteTeamPlayer') === username) localStorage.removeItem('whiteTeamPlayer');
@@ -68,7 +59,6 @@ window.addEventListener('beforeunload', function() {
     localStorage.removeItem('team');
 });
 
-/* --- Vérification auth au chargement --- */
 window.onload = function() {
     var username = localStorage.getItem('username');
     var elo      = localStorage.getItem('elo');
@@ -82,7 +72,6 @@ window.onload = function() {
     if (usernameEl) usernameEl.textContent = username;
     if (eloEl)      eloEl.textContent = isGuest ? 'Guest' : elo;
 
-    /* Invité : ne peut pas jouer */
     if (isGuest) {
         var wb = document.getElementById('white-team-btn');
         var bb = document.getElementById('black-team-btn');

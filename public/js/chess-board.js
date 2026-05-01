@@ -1,8 +1,4 @@
-﻿/* =============================================================
-   Chess App — Board Initialization & Drag/Drop
-   ============================================================= */
-
-var draggedPieceSource = null;
+﻿var draggedPieceSource = null;
 
 window.addEventListener('load', function() {
     var boardEl = document.getElementById('myBoard');
@@ -38,7 +34,7 @@ window.addEventListener('load', function() {
             if (move === null) return 'snapback';
 
             updateStatus();
-            socket.emit('move', { fen: game.fen(), piece: piece, from: source, to: target, gameId: gameId });
+            socket.emit('move', { from: source, to: target, gameId: gameId });
 
             if (game.game_over()) {
                 var winner, loser;

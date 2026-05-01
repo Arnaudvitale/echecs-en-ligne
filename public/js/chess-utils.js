@@ -1,8 +1,3 @@
-/* =============================================================
-   Chess App — UI Utilities
-   Fonctions d'affichage partagées PC & mobile.
-   ============================================================= */
-
 function realisticConfetti() {
     var count    = 200;
     var defaults = { origin: { y: 0.7 } };

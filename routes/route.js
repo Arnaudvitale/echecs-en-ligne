@@ -1,49 +1,42 @@
-const express = require('express');
-const router = express.Router();
-const User = require('../models/user');
-const session = require('express-session');
+﻿const express  = require('express');
+const router   = express.Router();
+const User     = require('../models/user');
+const bcrypt   = require('bcrypt');
 
-router.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false } // set secure to true if using https
-}));
+const SALT_ROUNDS = 10;
 
-router.post("/register", (req, res) => {
-    User.findOne({username: req.body.username}).then((user_found) => {
-        if(user_found) {
-            res.send({ status: 'error', message: 'Username already taken' });
-        } else {
-            const new_user = new User({username: req.body.username, password: req.body.password});
-            new_user.save()
-                .then(() => res.send({ status: 'ok', message: `Registered ${req.body.username}`}))
+
+router.post('/register', (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password || username.length > 30 || password.length < 4) {
+        return res.send({ status: 'error', message: 'Invalid input' });
+    }
+    User.findOne({ username }).then(found => {
+        if (found) return res.send({ status: 'error', message: 'Username already taken' });
+        bcrypt.hash(password, SALT_ROUNDS).then(hash => {
+            new User({ username, password: hash }).save()
+                .then(() => res.send({ status: 'ok', message: 'Registered ' + username }))
                 .catch(err => res.send({ status: 'error', message: err.message }));
-        }
-    }).catch((err) => {
-        res.send({ status: 'error', message: err.message });
-    });
+        });
+    }).catch(err => res.send({ status: 'error', message: err.message }));
 });
 
-router.post("/login", (req, res) => {
-    User.findOne({username: req.body.username}).then((user_found) => {
-        if(user_found.password == req.body.password) {
-            req.session.username = req.body.username; // Save username in session
-            res.send({ status: 'ok', username: req.body.username, elo: user_found.elo });
-        } else {
-            res.send({ status: 'error', message: 'Incorrect username or password' });
-        }
-    }).catch(() => {
-        res.send({ status: 'error', message: 'User not found' });
-    });
+router.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) return res.send({ status: 'error', message: 'Invalid input' });
+    User.findOne({ username }).then(found => {
+        if (!found) return res.send({ status: 'error', message: 'Incorrect username or password' });
+        bcrypt.compare(password, found.password).then(match => {
+            if (!match) return res.send({ status: 'error', message: 'Incorrect username or password' });
+            req.session.username = found.username;
+            res.send({ status: 'ok', username: found.username, elo: found.elo });
+        });
+    }).catch(() => res.send({ status: 'error', message: 'Incorrect username or password' }));
 });
 
-router.get("/logout", (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.redirect('/chess.html');
-        }
-        res.clearCookie(process.env.SESSION_SECRET);
+router.get('/logout', (req, res) => {
+    req.session.destroy(() => {
+        res.clearCookie('connect.sid');
         res.redirect('/index.html');
     });
 });

@@ -1,9 +1,4 @@
-﻿/* =============================================================
-   Chess App — Socket.io Events
-   ============================================================= */
-
-/* Rejoindre la partie à chaque (re)connexion */
-socket.on('connect', function() {
+﻿socket.on('connect', function() {
     var username = localStorage.getItem('username');
     var team     = localStorage.getItem('team');
     var isGuest  = localStorage.getItem('isGuest') === 'true';
@@ -15,7 +10,6 @@ socket.on('connect', function() {
     }
 });
 
-/* État initial à la connexion */
 socket.on('init', function(state) {
     game.load(state.game);
     board.position(state.game);
@@ -37,7 +31,6 @@ socket.on('init', function(state) {
     displayMovesHistory(state.movesHistory);
 });
 
-/* Mise à jour des équipes */
 socket.on('teams update', function(teams) {
     var whiteBtn   = document.getElementById('white-team-btn');
     var blackBtn   = document.getElementById('black-team-btn');
@@ -72,7 +65,6 @@ socket.on('teams update', function(teams) {
     updateStatus();
 });
 
-/* Coup joue */
 socket.on('move', function(fen) {
     game.load(fen);
     board.position(game.fen());
@@ -82,17 +74,14 @@ socket.on('move', function(fen) {
     isKingInCheck();
 });
 
-/* Historique */
 socket.on('updateHistory', function(history) {
     displayMovesHistory(history);
 });
 
-/* Son */
 socket.on('move sound', function() {
     playSound(moveSound);
 });
 
-/* ELO */
 socket.on('update elo', function(data) {
     if (localStorage.getItem('username') === data.username) {
         var el = document.getElementById('elo');
@@ -101,7 +90,6 @@ socket.on('update elo', function(data) {
     }
 });
 
-/* Resultat */
 socket.on('game result', function(data) {
     swal({ title: data.message, buttons: { confirm: { text: 'OK', value: true, visible: true, closeModal: true } } });
     if (data.message.startsWith('You won')) { playSound(winSound); realisticConfetti(); }
@@ -111,18 +99,17 @@ socket.on('game result', function(data) {
     if (tp) tp.style.display = 'none';
 });
 
-/* Partie non trouvee */
 socket.on('game not found', function() {
     window.location.href = '/lobby';
 });
-/* Démarrage effectif (les deux équipes sélectionnées) */
+
 socket.on('game start', function(data) {
     game.load(data.fen);
     board.position(game.fen());
     updateStatus();
     isKingInCheck();
 });
-/* Reset de la partie */
+
 socket.on('restart', function() {
     game = new Chess();
     board.position(game.fen());
@@ -154,7 +141,6 @@ socket.on('restart', function() {
     if (mh) mh.innerHTML = '';
 });
 
-/* Demande restart adverse */
 socket.on('promptRestart', function(msg) {
     swal({
         title: msg.username + ' wants to restart. Accept?',
@@ -164,7 +150,6 @@ socket.on('promptRestart', function(msg) {
     });
 });
 
-/* Reponse restart */
 socket.on('responseRestart', function(msg) {
     if (msg.username) {
         socket.emit('restart', { gameId: gameId });
@@ -174,3 +159,4 @@ socket.on('responseRestart', function(msg) {
         if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
     }
 });
+
