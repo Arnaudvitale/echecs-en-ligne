@@ -26,10 +26,21 @@ router.post('/login', (req, res) => {
     if (!username || !password) return res.send({ status: 'error', message: 'Invalid input' });
     User.findOne({ username }).then(found => {
         if (!found) return res.send({ status: 'error', message: 'Incorrect username or password' });
-        bcrypt.compare(password, found.password).then(match => {
-            if (!match) return res.send({ status: 'error', message: 'Incorrect username or password' });
-            req.session.username = found.username;
-            res.send({ status: 'ok', username: found.username, elo: found.elo });
+        const isHashed = found.password.startsWith('$2b$') || found.password.startsWith('$2a$');
+        if (isHashed) {
+            return bcrypt.compare(password, found.password).then(match => {
+                if (!match) return res.send({ status: 'error', message: 'Incorrect username or password' });
+                req.session.username = found.username;
+                res.send({ status: 'ok', username: found.username, elo: found.elo });
+            });
+        }
+        if (found.password !== password) return res.send({ status: 'error', message: 'Incorrect username or password' });
+        bcrypt.hash(password, SALT_ROUNDS).then(hash => {
+            found.password = hash;
+            found.save().then(() => {
+                req.session.username = found.username;
+                res.send({ status: 'ok', username: found.username, elo: found.elo });
+            });
         });
     }).catch(() => res.send({ status: 'error', message: 'Incorrect username or password' }));
 });
