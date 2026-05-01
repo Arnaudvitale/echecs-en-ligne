@@ -1,189 +1,360 @@
-* {
+/* ================================================================
+   Chess PC — White Design System
+   ================================================================ */
+:root {
+    --bg:           #f8fafc;
+    --surface:      #ffffff;
+    --surface2:     #f1f5f9;
+    --border:       #e2e8f0;
+    --text:         #1e293b;
+    --text-muted:   #64748b;
+    --accent:       #6366f1;
+    --accent-hover: #4f46e5;
+    --danger:       #ef4444;
+    --danger-hover: #dc2626;
+    --radius:       12px;
+}
+
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* global style */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    padding: 20px;
-}
-
-/* Header */
-header {
-    background-color: #fff;
-    padding: 20px;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-    box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-
-/* Titles */
-h1 {
-    flex: 1;
-    text-align: center;
-    color: #000000b9;
-    margin: 0;
-}
-
-h2 {
-    color: #333;
-    user-select: none;
-}
-
-/* principal container */
-#container {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-}
-
-/* container elements */
-.item {
-    flex: 1;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Buttons */
-button {
-    margin-top: 10px;
-    padding: 10px 15px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#logout-btn {
-    background-color: #DC3545;
-}
-
-#logout-btn:hover {
-    background-color: #C82333;
-}
-
-#restart-btn {
-    background-color: #DC3545;
-    width: 80%;
-    margin: 20px auto;
-    display: block;
-    padding: 15px 0;
-    font-size: 18px;
-}
-
-#two-players {
-    display: none;
-}
-
-#restart-btn:hover {
-    background-color: #C82333;
-}
-
-button:hover {
-    background-color: #0069D9;
-}
-
-/* teams */
-.team-container {
-    text-align: center;
-}
-
-.team-btn {
-    margin: 10px;
-    border: none;
-    border-radius: 5px;
-    width: 120px;
-    height: 50px;
-    font-size: 15px;
-    cursor: pointer;
-}
-
-.team-btn:hover {
-    transform: scale(1.05);
-}
-
-/* Chat */
-#chat {
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    overflow: hidden;
 }
 
-#messages {
-    flex-grow: 1;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-    overflow-y: scroll;
-}
-
-#form {
+/* ── Header ──────────────────────────────────────────────────── */
+header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
     display: flex;
-}
-
-#input {
-    flex-grow: 1;
-    padding-left: 5px;
-    margin-right: 10px;
-}
-
-#send-btn {
-    align-self: center;
-    height: 100%;
-    margin-top: 0;
-}
-
-/* other elements */
-#elo-display, #logged-in {
-    margin-bottom: 20px;
-}
-
-#elo-display {
-    color: #555555;
-    font-weight: bold;
-    font-size: 20px;
-}
-
-#username {
-    color: #e21010;
-    font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 2px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 60px;
+    flex-shrink: 0;
+    user-select: none;
 }
 
 #user {
     display: flex;
     flex-direction: column;
+    gap: 2px;
+    min-width: 140px;
 }
 
-#status {
-    margin-bottom: 10px;
+#username {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+#elo-display {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.5px;
+    flex: 1;
     text-align: center;
-    font-weight: bold;
-    font-size: 20px;
-    color: #555555;
-    user-select: none;
 }
 
-#movesHistory {
-    margin-top: 10px;
-    color: #000000;
+#logged-in {
+    min-width: 140px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#logout-btn {
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+#logout-btn:hover {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+}
+
+/* ── Main container ───────────────────────────────────────────── */
+#container {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ── Cards ────────────────────────────────────────────────────── */
+.item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* ── Left: Teams + History ────────────────────────────────────── */
+.team-container {
+    flex: 0 0 210px;
+}
+
+h2 {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.team-btn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    border: 2px solid transparent;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+#white-team-btn {
+    background: #f8fafc;
+    color: #0f172a;
+    border: 2px solid #cbd5e1;
+}
+
+#white-team-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+#black-team-btn {
+    background: #1e293b;
+    color: #f1f5f9;
+    border-color: #1e293b;
+}
+
+#black-team-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+#move-history {
+    margin-top: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 #movesHistoryContainer {
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    height: 35rem;
+    flex: 1;
     overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px;
+    background: var(--surface2);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
 }
+
+#movesHistory {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+#movesHistory li {
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-size: 12px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    line-height: 1.3;
+}
+
+#movesHistory li:nth-child(even) {
+    border-left-color: #7c3aed;
+}
+
+.check-alert {
+    border-left-color: #f59e0b !important;
+    color: #fbbf24 !important;
+    font-weight: 700 !important;
+}
+
+.game-over-alert {
+    border-left-color: var(--danger) !important;
+    color: var(--danger) !important;
+    font-weight: 700 !important;
+}
+
+/* ── Center: Board ────────────────────────────────────────────── */
+.board-col {
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+#status {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    text-align: center;
+    user-select: none;
+}
+
+#myBoard {
+    width: 480px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+#restart-btn {
+    background: linear-gradient(135deg, var(--danger), #b91c1c);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 11px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: filter 0.15s, transform 0.15s;
+}
+
+#restart-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+#two-players { display: none; }
+
+/* ── Right: Chat ──────────────────────────────────────────────── */
+.chat-col {
+    flex: 1;
+    min-width: 200px;
+}
+
+#chat {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+#messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+#messages li {
+    padding: 7px 10px;
+    border-radius: 7px;
+    font-size: 13px;
+    background: var(--surface);
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.username {
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: 3px;
+}
+
+#form {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+#input {
+    flex: 1;
+    padding: 9px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+#input:focus { border-color: var(--accent); }
+#input::placeholder { color: var(--text-muted); }
+
+#send-btn {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+
+#send-btn:hover { background: var(--accent-hover); }
+

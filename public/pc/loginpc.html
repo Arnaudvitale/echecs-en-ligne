@@ -1,53 +1,68 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login page</title>
-    <link rel="website icon" type="png" href="../img/icon/chessicon.png">
+    <title>Chess — Login</title>
+    <link rel="icon" type="image/png" href="../img/icon/chessicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/pc/loginpc.css">
 </head>
-    <body>
-        <div class="dev">About</div>
+<body>
+    <button class="about-btn" id="dev-link">About</button>
+
     <div class="container" id="container">
-        <div class="form-container sign-up-container">
-            <form id="register-form">
-                <h1>Create Account</h1>
-                <input type="text" id="reg-username" placeholder="Username" required/>
-                <input id="reg-password" placeholder="Password" required="" type="password"/>
-                <img class="toggle-password-visibility" src="../img/pwd/closedeye.png" style="cursor: pointer;"/>
-                <button type="submit">Register</button>
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-signin-btn">Sign In</button>
+            <button class="tab-btn" id="tab-signup-btn">Register</button>
+        </div>
+
+        <div class="form-panel" id="signin-panel">
+            <div class="panel-icon"><i class="fas fa-chess-queen"></i></div>
+            <form id="login-form" novalidate>
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" placeholder="Username" autocomplete="username" required />
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" placeholder="Password" autocomplete="current-password" required />
+                    <button type="button" class="toggle-pwd" aria-label="Toggle password">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
             </form>
         </div>
-        <div class="form-container sign-in-container">
-            <form id="login-form">
-                <h1>Login</h1>
-                <input type="text" id="username" placeholder="Username" required/>
-                <input id="password" placeholder="Password" required="" type="password"/>
-                <img class="toggle-password-visibility" src="../img/pwd/closedeye.png" id="eyes" style="cursor: pointer;"/>
-                <button type="submit">Login</button>
+
+        <div class="form-panel" id="signup-panel" style="display:none">
+            <div class="panel-icon"><i class="fas fa-chess-pawn"></i></div>
+            <form id="register-form" novalidate>
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="reg-username" placeholder="Username" autocomplete="username" required />
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="reg-password" placeholder="Password" autocomplete="new-password" required />
+                    <button type="button" class="toggle-pwd" aria-label="Toggle password">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                </div>
+                <button type="submit" class="btn-primary">Register</button>
             </form>
         </div>
-        <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-left">
-                    <h1>Welcome Back!</h1>
-                    <img src="../img/pic/chessImg.png" alt="queen" width="160px" height="154px" oncontextmenu="return false;" draggable="false">
-                    <p>Already have an account ? Go to login and play chess !</p>
-                    <button class="ghost" id="signIn">go to login </button>
-                </div>
-                <div class="overlay-panel overlay-right">
-                    <h1>Hey, Friend!</h1>
-                    <img src="../img/pic/pion.png" alt="queen" width="100px" height="100px" oncontextmenu="return false;" draggable="false">
-                    <p>Don't have an account ? Go to register !</p>
-                    <button class="ghost" id="signUp">go to register</button>
-                </div>
-            </div>
+
+        <div class="guest-row">
+            <button id="guest-btn" class="btn-guest">
+                <i class="fas fa-user-secret"></i> Continue as Guest
+            </button>
         </div>
     </div>
+
     <script src="/pc/loginpc.js"></script>
     <script>
-        window.history.replaceState(null, null, "/login");
+        window.history.replaceState(null, null, '/login');
     </script>
 </body>
 </html>

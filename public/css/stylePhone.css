@@ -1,162 +1,462 @@
-* {
+/* ================================================================
+   Chess Mobile — Design System
+   ================================================================ */
+
+/* --- Reset --- */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f3f3;
-    padding: 10px;
+/* --- Variables --- */
+:root {
+    --bg:           #f8fafc;
+    --surface:      #ffffff;
+    --surface2:     #f1f5f9;
+    --border:       #e2e8f0;
+    --text:         #1e293b;
+    --text-muted:   #64748b;
+    --accent:       #6366f1;
+    --accent-hover: #4f46e5;
+    --danger:       #ef4444;
+    --danger-hover: #dc2626;
+    --purple:       #7c3aed;
+    --purple-hover: #6d28d9;
+    --header-h:     56px;
+    --panel-w:      min(320px, 90vw);
+    --radius:       12px;
+    --ease:         cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#logged-in {
+/* --- Body --- */
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ================================================================
+   Header
+   ================================================================ */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    gap: 10px;
+    user-select: none;
+}
+
+.header-user {
     display: flex;
     flex-direction: column;
-    user-select: none;
-    margin-bottom: 10px;
+    line-height: 1.25;
+    min-width: 0;
+    flex-shrink: 0;
 }
 
-#elo-display, #logh2 {
+.header-username {
     font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90px;
 }
 
-#choose-team {
-    margin-top: 40px;
+.header-elo {
+    font-size: 11px;
+    color: var(--text-muted);
 }
 
-#logout-btn {
-    background-color: #f44336;
-    position: absolute;
-    align-self: center;
-    color: white;
-    padding: 10px 15px;
-    width: 20%;
-    border: none;
-    border-radius: 5px;
-}
-
-.item {
-    margin-bottom: 20px;
-}
-
-.team-container {
+.header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
     text-align: center;
-    background-color: #fff;
-    border-radius: 5px;
-    box-sizing: border-box;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.5px;
+}
+
+/* ================================================================
+   Icon button
+   ================================================================ */
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+
+.btn-logout {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.btn-logout:hover,
+.btn-logout:active {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-lobby {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--accent);
+}
+
+.btn-lobby:hover,
+.btn-lobby:active {
+    background: var(--accent);
+    color: #fff;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* ================================================================
+   Status bar
+   ================================================================ */
+.status-bar {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 7px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.3px;
+    user-select: none;
+}
+
+/* ================================================================
+   Team panel
+   ================================================================ */
+.team-panel {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    justify-content: center;
+    align-items: center;
 }
 
 .team-btn {
-    background-color: #007BFF;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    margin: 5px;
+    flex: 1;
+    max-width: 140px;
+    padding: 10px 8px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease), opacity 0.2s;
+    border: 2px solid transparent;
 }
 
-#status {
-    margin: 5px 0;
-    text-align: center;
-    user-select: none;
+.team-white {
+    background: #f8fafc;
+    color: #0f172a;
+    border: 2px solid #cbd5e1;
 }
 
-#username {
-    font-weight: bold;
-    color: #123456;
+.team-white:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+.team-black {
+    background: #1e293b;
+    color: #f8fafc;
+    border-color: #1e293b;
+}
+
+.team-black:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+.btn-restart {
+    flex-shrink: 0;
+    padding: 9px 10px;
+    font-size: 12px;
+}
+
+/* ================================================================
+   Board
+   ================================================================ */
+.board-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 6px 14px;
 }
 
 #myBoard {
-    margin: 0 auto;
+    width: 100% !important;
+    max-width: 420px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
 }
 
-#restart-btn {
-    background-color: #FF4136;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    font-size: 19px;
-    border-radius: 5px;
-    display: block;
-    margin: 10px auto;
-    width: 40%;
-}
-
-#two-players {
-    display: none;
-}
-
-#chat {
-    background-color: white;
-    border-radius: 5px;
-    padding: 10px;
-}
-
-#messages {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-#form {
+/* ================================================================
+   Action bar
+   ================================================================ */
+.action-bar {
     display: flex;
+    gap: 8px;
+    padding: 8px 14px 12px;
+    justify-content: center;
+}
+
+.btn-action {
+    flex: 1;
+    max-width: 160px;
+    padding: 9px 6px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: #fff;
+    transition: transform 0.15s var(--ease), filter 0.15s;
+}
+
+.btn-action:active {
+    transform: scale(0.96);
+    filter: brightness(0.9);
+}
+
+.btn-restart  { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+.btn-history  { background: linear-gradient(135deg, #7c3aed, #5b21b6); }
+.btn-chat     { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+
+#two-players { display: none; }
+
+/* ================================================================
+   Side panels
+   ================================================================ */
+.side-panel {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    width: var(--panel-w);
+    background: var(--surface);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s var(--ease);
+    will-change: transform;
+}
+
+.panel-left {
+    left: 0;
+    transform: translateX(-100%);
+    border-right: 1px solid var(--border);
+}
+
+.panel-left.open { transform: translateX(0); }
+
+.panel-right {
+    right: 0;
+    transform: translateX(100%);
+    border-left: 1px solid var(--border);
+}
+
+.panel-right.open { transform: translateX(0); }
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.panel-header h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-close {
+    width: 30px;
+    height: 30px;
+    background: var(--surface2);
+    border: none;
+    border-radius: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-close:hover { background: var(--border); color: var(--text); }
+
+.panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+/* ================================================================
+   Move history
+   ================================================================ */
+#movesHistory {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#movesHistory li {
+    padding: 7px 10px;
+    border-radius: 7px;
+    font-size: 13px;
+    color: var(--text);
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    line-height: 1.3;
+}
+
+#movesHistory li:nth-child(even) {
+    border-left-color: var(--purple);
+}
+
+.check-alert {
+    border-left-color: #f59e0b !important;
+    color: #fbbf24 !important;
+    font-weight: 700 !important;
+}
+
+.game-over-alert {
+    border-left-color: var(--danger) !important;
+    color: var(--danger) !important;
+    font-weight: 700 !important;
+}
+
+/* ================================================================
+   Chat
+   ================================================================ */
+.messages-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.messages-list li {
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    background: var(--surface2);
+    word-break: break-word;
+    line-height: 1.4;
+    border: 1px solid var(--border);
+}
+
+.username {
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: 3px;
+}
+
+.chat-form {
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+    background: var(--surface);
 }
 
 #input {
     flex: 1;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 9px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
 }
 
-#form button {
-    background-color: #007BFF;
-    color: white;
-    padding: 10px 15px;
+#input:focus { border-color: var(--accent); }
+#input::placeholder { color: var(--text-muted); }
+
+.chat-form button[type="submit"] {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    background: var(--accent);
     border: none;
-    border-radius: 5px;
-    margin-left: 5px;
-}
-
-#toggle-chat-btn {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-    border: none;
-    padding: 5px;
-    border-radius: 20%;
-    color: black;
-    font-size: 20px;
-    transition: right 0.3s ease;
-}
-
-
-#toggle-chat-btn.open {
-    right: 310px;
-}
-
-#chat {
-    position: fixed;
-    top: 0;
-    right: -320px;
-    width: 300px;
-    height: 100%;
-    background-color: white;
-    border-left: 1px solid #ddd;
-    padding: 20px;
-    transition: right 0.3s ease;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 15px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    padding: 0;
+    margin: 0;
 }
 
-#chat.open {
-    right: 0;
+.chat-form button[type="submit"]:hover { background: var(--accent-hover); }
+
+/* ================================================================
+   Overlay
+   ================================================================ */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 150;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s var(--ease);
 }
 
-#form {
-    margin-top: auto;
+.overlay.active {
+    opacity: 1;
+    pointer-events: all;
 }

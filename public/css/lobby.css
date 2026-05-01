@@ -1,0 +1,235 @@
+/* ================================================================
+   Lobby — White Design System
+   ================================================================ */
+:root {
+    --bg:      #f8fafc;
+    --surface: #ffffff;
+    --border:  #e2e8f0;
+    --text:    #1e293b;
+    --muted:   #64748b;
+    --accent:  #6366f1;
+    --accent2: #4f46e5;
+    --danger:  #ef4444;
+    --green:   #22c55e;
+    --radius:  12px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    user-select: none;
+}
+
+#user {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 120px;
+}
+
+#username {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+#elo-display {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+h1 {
+    font-size: 18px;
+    font-weight: 700;
+    flex: 1;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+#logout-btn {
+    background: rgba(239, 68, 68, 0.08);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    min-width: 120px;
+    justify-content: flex-end;
+}
+
+#logout-btn:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+/* ── Main ───────────────────────────────────────────────────── */
+main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 16px;
+}
+
+.lobby-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.lobby-top h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+#create-game-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: filter 0.15s, transform 0.1s;
+}
+
+#create-game-btn:hover    { filter: brightness(1.1); }
+#create-game-btn:active   { transform: scale(0.97); }
+#create-game-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: none;
+}
+
+/* ── Games list ─────────────────────────────────────────────── */
+#games-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+}
+
+.game-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    cursor: pointer;
+}
+
+.game-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-color: var(--accent);
+}
+
+.game-card-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.game-card-players {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.player-slot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.player-slot i { width: 14px; text-align: center; }
+.slot-taken   { color: var(--text); font-weight: 600; }
+.slot-open    { color: var(--green); font-style: italic; }
+
+.game-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.btn-enter {
+    flex: 1;
+    padding: 9px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+}
+
+.btn-enter:hover { filter: brightness(1.1); }
+
+/* ── Empty state ────────────────────────────────────────────── */
+#no-games {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+}
+
+#no-games i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.3;
+    display: block;
+}
+
+#no-games p {
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+#no-games-hint {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+    header { padding: 0 14px; }
+    #logout-btn { padding: 7px 10px; min-width: auto; }
+    #logout-btn span { display: none; }
+}

@@ -3,40 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Login page</title>
-    <link rel="website icon" type="png" href="../img/icon/chessicon.png">
+    <title>Chess — Login</title>
+    <link rel="icon" type="image/png" href="../img/icon/chessicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="/phone/loginphone.css">
-</html>
+</head>
 <body>
-    <div class="dev">About</div>
-    <div class="container" id="container">
-        <div class="form-container sign-in-container">
-            <form id="login-form">
-                <h1>Login</h1>
-                <input type="text" id="username" placeholder="Username" required/>
-                <div class="password-container">
-                    <input type="password" id="password" placeholder="Password" required/>
-                    <img class="toggle-password-visibility" src="../img/pwd/closedeye.png" style="cursor: pointer;"/>
+    <button class="about-btn" id="dev-link">About</button>
+
+    <div class="auth-card" id="container">
+        <!-- Tabs -->
+        <div class="tab-bar">
+            <button class="tab active" data-target="sign-in">Sign In</button>
+            <button class="tab" data-target="sign-up">Register</button>
+        </div>
+
+        <!-- Sign In -->
+        <div class="form-panel sign-in-container" id="sign-in">
+            <form id="login-form" novalidate>
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="username" placeholder="Username" autocomplete="username" required />
                 </div>
-                <button type="submit">Login</button>
-                <p>don't have an account ?</p>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" placeholder="Password" autocomplete="current-password" required />
+                    <button type="button" class="toggle-pwd" aria-label="Toggle password">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
             </form>
         </div>
-        <div class="form-container sign-up-container">
-            <form id="register-form">
-                <h1>Create Account</h1>
-                <input type="text" id="reg-username" placeholder="Username" required/>
-                <div class="password-container">
-                    <input type="password" id="reg-password" placeholder="Password" required/>
-                    <img class="toggle-password-visibility" src="../img/pwd/closedeye.png" style="cursor: pointer;"/>
+
+        <!-- Sign Up -->
+        <div class="form-panel sign-up-container" id="sign-up" style="display:none">
+            <form id="register-form" novalidate>
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="reg-username" placeholder="Username" autocomplete="username" required />
                 </div>
-                <button type="submit">Register</button>
-                <p>Already have an account ?</p>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="reg-password" placeholder="Password" autocomplete="new-password" required />
+                    <button type="button" class="toggle-pwd" aria-label="Toggle password">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                </div>
+                <button type="submit" class="btn-primary">Create Account</button>
             </form>
         </div>
     </div>
+
+    <div style="margin-top:16px;text-align:center;">
+        <button id="guest-btn" style="background:rgba(100,116,139,0.08);color:#64748b;border:1px solid #cbd5e1;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;width:100%;">
+            <i class="fas fa-user-secret" style="margin-right:6px;"></i>Continue as Guest
+        </button>
+    </div>
+
     <script src="/phone/loginphone.js"></script>
     <script>
-        window.history.replaceState(null, null, "/login-page");
+        window.history.replaceState(null, null, '/login-page');
     </script>
 </body>
+</html>

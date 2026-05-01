@@ -4,51 +4,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
     <title>Chess</title>
-    <link rel="website icon" type="png" href="img/icon/chessicon.png">
+    <link rel="icon" type="image/png" href="img/icon/chessicon.png">
     <link rel="stylesheet" href="/css/stylePhone.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
-    <body>
-        <button id="toggle-chat-btn">
-        <i class="fas fa-bars"></i>
-    </button>
-    <div id="logged-in">
-        <span id="username"></span>
-        <div id="elo-display">ELO: <span id="elo"></span></div>
-        <button id="logout-btn">Logout</button>
-    </div>
-    <div class="item team-container">
-        <h2 id="choose-team">Choose Team</h2>
-        <button id="white-team-btn" class="team-btn">White Team</button>
-        <button id="black-team-btn" class="team-btn">Black Team</button>
-    </div>
-    <div id="status"></div>
-        <div class="item">
-            <div id="myBoard"></div>
-            <button id="restart-btn" class="restart"><span id="two-players">request a </span>restart</button>
+<body>
+
+    <!-- ── Header ─────────────────────────────────────── -->
+    <header class="app-header">
+        <div class="header-user">
+            <span id="username" class="header-username"></span>
+            <span class="header-elo">ELO <span id="elo">—</span></span>
         </div>
-        <div class="item">
-            <div id="chat">
-                <div id="messages"></div>
-                <form id="form">
-                    <input id="input" autocomplete="off" maxlength="150" /><button>Send</button>
-                </form>
-            </div>
+        <h1 class="header-title" id="game-name">Chess</h1>
+        <div class="header-actions">
+            <button id="lobby-btn" class="btn-icon btn-lobby" title="Lobby">
+                <i class="fas fa-left-long"></i>
+            </button>
+            <button id="logout-btn" class="btn-icon btn-logout" title="Logout">
+                <i class="fas fa-right-from-bracket"></i>
+            </button>
         </div>
+    </header>
+
+    <!-- ── Status ─────────────────────────────────────── -->
+    <div id="status" class="status-bar">Loading…</div>
+
+    <!-- ── Team selection ────────────────────────────── -->
+    <div class="team-panel">
+        <button id="white-team-btn" class="team-btn team-white">
+            <i class="fas fa-chess-king"></i> White
+        </button>
+        <button id="black-team-btn" class="team-btn team-black">
+            <i class="fas fa-chess-king"></i> Black
+        </button>
+    </div>
+
+    <!-- ── Board ──────────────────────────────────────── -->
+    <div class="board-wrapper">
+        <div id="myBoard"></div>
+    </div>
+
+    <!-- ── Action bar ─────────────────────────────────── -->
+    <div class="action-bar">
+
+        <button id="toggle-history-btn" class="btn-action btn-history">
+            <i class="fas fa-list-ol"></i> Moves
+        </button>
+        <button id="restart-btn" class="btn-action btn-restart" style="display:none;">
+            <i class="fas fa-rotate-right"></i>
+            <span><span id="two-players">Request </span>Restart</span>
+        </button>
+        <button id="toggle-chat-btn" class="btn-action btn-chat">
+            <i class="fas fa-comments"></i> Chat
+        </button>
+    </div>
+
+    <!-- ── History panel (gauche) ─────────────────────── -->
+    <aside id="history-panel" class="side-panel panel-left" aria-label="Move history">
+        <div class="panel-header">
+            <h2><i class="fas fa-list-ol"></i> Move History</h2>
+            <button id="close-history-btn" class="btn-close" aria-label="Close">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+        <div id="movesHistoryContainer" class="panel-body">
+            <ul id="movesHistory"></ul>
+        </div>
+    </aside>
+
+    <!-- ── Chat panel (droite) ────────────────────────── -->
+    <aside id="chat" class="side-panel panel-right" aria-label="Chat">
+        <div class="panel-header">
+            <h2><i class="fas fa-comments"></i> Chat</h2>
+            <button id="close-chat-btn" class="btn-close" aria-label="Close">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+        <div id="messages" class="panel-body messages-list"></div>
+        <form id="form" class="chat-form">
+            <input id="input" autocomplete="off" maxlength="150" placeholder="Message…" />
+            <button type="submit" aria-label="Send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </aside>
+
+    <!-- ── Overlay ────────────────────────────────────── -->
+    <div id="overlay" class="overlay"></div>
+
+    <!-- ── Scripts ────────────────────────────────────── -->
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/app.js"></script>
-        <script>
-            window.history.replaceState(null, null, "/game");
-            $('#toggle-chat-btn').on('click', function() {
-                $('#chat').toggleClass('open');
-                $('#toggle-chat-btn').toggleClass('open');
-            });
-        </script>
-    </body>
+    <script src="/js/chess-state.js"></script>
+    <script src="/js/chess-utils.js"></script>
+    <script src="/js/chess-board.js"></script>
+    <script src="/js/chess-socket.js"></script>
+    <script src="/js/chess-chat.js"></script>
+    <script src="/js/chess-init.js"></script>
+    <script>
+        window.history.replaceState(null, null, '/game');
+
+        var historyPanel = document.getElementById('history-panel');
+        var chatPanel    = document.getElementById('chat');
+        var overlay      = document.getElementById('overlay');
+
+        function closeAllPanels() {
+            historyPanel.classList.remove('open');
+            chatPanel.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        document.getElementById('toggle-history-btn').addEventListener('click', function() {
+            var isOpen = historyPanel.classList.contains('open');
+            closeAllPanels();
+            if (!isOpen) { historyPanel.classList.add('open'); overlay.classList.add('active'); }
+        });
+
+        document.getElementById('toggle-chat-btn').addEventListener('click', function() {
+            var isOpen = chatPanel.classList.contains('open');
+            closeAllPanels();
+            if (!isOpen) { chatPanel.classList.add('open'); overlay.classList.add('active'); }
+        });
+
+        document.getElementById('close-history-btn').addEventListener('click', closeAllPanels);
+        document.getElementById('close-chat-btn').addEventListener('click', closeAllPanels);
+        overlay.addEventListener('click', closeAllPanels);
+    </script>
+</body>
 </html>

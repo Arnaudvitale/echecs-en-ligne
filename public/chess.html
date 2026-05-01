@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chess</title>
-    <link rel="website icon" type="png" href="img/icon/chessicon.png">
+    <link rel="icon" type="image/png" href="/img/icon/chessicon.png">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
@@ -17,43 +18,71 @@
     <header>
         <div id="user">
             <span id="username"></span>
-            <div id="elo-display">ELO: <span id="elo"></span></div>
+            <span id="elo-display">ELO <span id="elo"></span></span>
         </div>
-        <h1>Chess Game</h1>
+        <h1><span id="game-name">Chess</span></h1>
         <div id="logged-in">
-            <button id="logout-btn">Logout</button>
+            <button id="lobby-btn" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;margin-right:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(99,102,241,0.2)'" onmouseout="this.style.background='rgba(99,102,241,0.1)'">
+                <i class="fas fa-left-long"></i> Lobby
+            </button>
+            <button id="logout-btn">
+                <i class="fas fa-right-from-bracket"></i> Logout
+            </button>
         </div>
     </header>
+
     <div id="container">
+        <!-- Left: Teams + History -->
         <div class="item team-container">
             <h2>Choose Team</h2>
-            <button id="white-team-btn" class="team-btn">White Team</button>
-            <button id="black-team-btn" class="team-btn">Black Team</button>
+            <button id="white-team-btn" class="team-btn">
+                <i class="fas fa-chess-king"></i> White
+            </button>
+            <button id="restart-btn" style="display:none;margin-bottom:8px;">
+                <i class="fas fa-rotate-right"></i>
+                <span><span id="two-players">Request </span>Restart</span>
+            </button>
+            <button id="black-team-btn" class="team-btn">
+                <i class="fas fa-chess-king"></i> Black
+            </button>
             <div id="move-history">
                 <h2>Move History</h2>
                 <div id="movesHistoryContainer">
-                    <ul id='movesHistory'></ul>
+                    <ul id="movesHistory"></ul>
                 </div>
             </div>
         </div>
-        <div class="item">
+
+        <!-- Center: Board -->
+        <div class="item board-col">
             <div id="status"></div>
             <div id="myBoard"></div>
-            <button id="restart-btn" class="restart"><span id="two-players">request a </span>restart</button>
         </div>
-        <div class="item">
+
+        <!-- Right: Chat -->
+        <div class="item chat-col">
+            <h2><i class="fas fa-comments"></i> Chat</h2>
             <div id="chat">
-                <div id="messages"></div>
+                <ul id="messages"></ul>
                 <form id="form">
-                    <input id="input" autocomplete="off" maxlength="150" /><button id="send-btn">Send</button>
+                    <input id="input" autocomplete="off" maxlength="150" placeholder="Message…" />
+                    <button id="send-btn" type="submit" aria-label="Send">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </form>
             </div>
         </div>
     </div>
+
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/app.js"></script>
+    <script src="/js/chess-state.js"></script>
+    <script src="/js/chess-utils.js"></script>
+    <script src="/js/chess-board.js"></script>
+    <script src="/js/chess-socket.js"></script>
+    <script src="/js/chess-chat.js"></script>
+    <script src="/js/chess-init.js"></script>
     <script>
         window.history.replaceState(null, null, "/chess");
     </script>
-    </body>
+</body>
 </html>

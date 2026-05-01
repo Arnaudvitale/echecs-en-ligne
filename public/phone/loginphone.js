@@ -1,109 +1,123 @@
-document.getElementById("login-form").addEventListener("submit", function(event){
-    event.preventDefault();
-    logIn(event);
-});
+// Tab switching
+var tabs = document.querySelectorAll('.tab');
+var panels = {
+    'sign-in': document.getElementById('sign-in'),
+    'sign-up': document.getElementById('sign-up')
+};
 
-document.getElementById("register-form").addEventListener("submit", function(event){
-    event.preventDefault();
-    register(event);
-});
-
-function shakeElement(element) {
-    element.classList.add('shake');
-    setTimeout(() => element.classList.remove('shake'), 820);
-}
-
-function addFadeInAnimation(element) {
-    element.classList.add('fade-in');
-    element.addEventListener('animationend', () => {
-        element.classList.remove('fade-in');
+tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+        tabs.forEach(function(t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        var target = tab.getAttribute('data-target');
+        Object.keys(panels).forEach(function(k) {
+            panels[k].style.display = k === target ? 'block' : 'none';
+        });
+        var active = panels[target];
+        active.style.animation = 'none';
+        void active.offsetWidth;
+        active.style.animation = 'fade-in 0.25s ease forwards';
     });
+});
+
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    logIn();
+});
+
+document.getElementById('register-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    register();
+});
+
+function shakeElement(el) {
+    el.classList.add('shake');
+    setTimeout(function() { el.classList.remove('shake'); }, 500);
 }
 
-function logIn(event) {
-    event.preventDefault();
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-    const username = usernameInput.value;
-    const password = passwordInput.value;
+function setError(input, hasError) {
+    input.classList.toggle('error', hasError);
+    if (!hasError) input.style.borderColor = '';
+}
 
+function logIn() {
+    var usernameInput = document.getElementById('username');
+    var passwordInput = document.getElementById('password');
     fetch('/login', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    }).then(response => response.json()).then(data => {
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: usernameInput.value, password: passwordInput.value })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
         if (data.status === 'error') {
             if (data.message === 'Incorrect username or password') {
-                usernameInput.style.borderColor = 'red';
-                shakeElement(usernameInput);
-                passwordInput.style.borderColor = 'red';
-                shakeElement(passwordInput);
-            } else if (data.message === 'User not found') {
-                usernameInput.style.borderColor = 'red';
-                shakeElement(usernameInput);
-                passwordInput.style.borderColor = '';
+                setError(usernameInput, true); shakeElement(usernameInput);
+                setError(passwordInput, true); shakeElement(passwordInput);
+            } else {
+                setError(usernameInput, true); shakeElement(usernameInput);
+                setError(passwordInput, false);
             }
         } else {
-            localStorage.setItem('username', data.username); // Save username in local storage
-            localStorage.setItem('elo', data.elo); // Save Elo in local storage
-            window.location.href = '/chessPhone.html';  // Redirect to the chess page
-            usernameInput.style.borderColor = '';
-            passwordInput.style.borderColor = '';
+            localStorage.setItem('username', data.username);
+            localStorage.setItem('elo', data.elo);
+            window.location.href = '/lobby';
         }
     });
 }
 
-function register(event) {
-    event.preventDefault();
-
-    const usernameInput = document.getElementById('reg-username');
-    const passwordInput = document.getElementById('reg-password');
-    const username = usernameInput.value;
-    const password = passwordInput.value;
-
+function register() {
+    var usernameInput = document.getElementById('reg-username');
+    var passwordInput = document.getElementById('reg-password');
     fetch('/register', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    }).then(response => response.json()).then(data => {
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: usernameInput.value, password: passwordInput.value })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
         if (data.status === 'error') {
-            usernameInput.style.borderColor = 'red';
+            setError(usernameInput, true);
             shakeElement(usernameInput);
-            passwordInput.style.borderColor = '';
+            setError(passwordInput, false);
         } else {
-            usernameInput.style.borderColor = '';
-            passwordInput.value = '';
+            setError(usernameInput, false);
             usernameInput.value = '';
-            document.querySelector(".sign-up-container").style.display = "none";
-            document.querySelector(".sign-in-container").style.display = "block";
+            passwordInput.value = '';
+            tabs[0].click();
         }
     });
 }
 
 window.onload = function() {
-    const storedUsername = localStorage.getItem('username');
-    const storedElo = localStorage.getItem('elo');
-
-    if (storedUsername && storedElo) {
-        window.location.href = '../chessPhone.html';
+    if (localStorage.getItem('username') && (localStorage.getItem('elo') || localStorage.getItem('isGuest') === 'true')) {
+        window.location.href = '/lobby';
     }
+    document.getElementById('guest-btn').addEventListener('click', function() {
+        localStorage.setItem('isGuest', 'true');
+        localStorage.setItem('username', 'Guest_' + Math.random().toString(36).substr(2, 6).toUpperCase());
+        window.location.href = '/lobby';
+    });
 };
 
-document.querySelector(".sign-in-container p").addEventListener("click", function() {
-    document.querySelector(".sign-in-container").style.display = "none";
-    document.querySelector(".sign-up-container").style.display = "block";
-    addFadeInAnimation(document.querySelector(".sign-up-container"));
+document.querySelectorAll('.toggle-pwd').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var input = this.previousElementSibling;
+        var icon = this.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'fas fa-eye';
+        } else {
+            input.type = 'password';
+            icon.className = 'fas fa-eye-slash';
+        }
+    });
 });
 
-document.querySelector(".sign-up-container p").addEventListener("click", function() {
-    document.querySelector(".sign-up-container").style.display = "none";
-    document.querySelector(".sign-in-container").style.display = "block";
-    addFadeInAnimation(document.querySelector(".sign-in-container"));
+document.getElementById('dev-link').addEventListener('click', function() {
+    window.location.href = '/devPage.html';
 });
+
 
 // Function to toggle password visibility
 function togglePasswordVisibility(event) {

@@ -1,218 +1,217 @@
 require('dotenv').config();
-const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const routes = require('./routes/route');
+const express    = require('express');
+const http       = require('http');
+const socketIo   = require('socket.io');
+const mongoose   = require('mongoose');
+const session    = require('express-session');
+const routes     = require('./routes/route');
 const bodyParser = require('body-parser');
-const User = require('./models/user');
+const User       = require('./models/user');
+const crypto     = require('crypto');
 
-const app = express();
+const app    = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io     = socketIo(server);
 
 app.use(express.static('public'));
+app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/', routes);
 
-app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-}));
+app.get('/chess',      (req, res) => res.sendFile(__dirname + '/public/chess.html'));
+app.get('/game',       (req, res) => res.sendFile(__dirname + '/public/chessPhone.html'));
+app.get('/lobby',      (req, res) => res.sendFile(__dirname + '/public/lobby.html'));
+app.get('/login',      (req, res) => res.sendFile(__dirname + '/public/pc/loginpc.html'));
+app.get('/login-page', (req, res) => res.sendFile(__dirname + '/public/phone/loginphone.html'));
+app.get('/about',      (req, res) => res.sendFile(__dirname + '/public/devPage.html'));
 
-app.get('/chess', function(req, res) {
-    res.sendFile(__dirname + '/public/chess.html');
-});
+// ── Multi-game state ────────────────────────────────────────────
+const games = new Map();
+let gameCounter = 1;
 
-app.get('/game', function(req, res) {
-    res.sendFile(__dirname + '/public/chessPhone.html');
-});
+function generateId() {
+    return crypto.randomBytes(4).toString('hex');
+}
 
-app.get('/login', function(req, res) {
-    res.sendFile(__dirname + '/public/pc/loginpc.html');
-});
+function makeGame(name, createdBy) {
+    const id = generateId();
+    games.set(id, {
+        id,
+        name:         name || ('Game #' + gameCounter++),
+        fen:          'start',
+        teams:        { w: null, b: null },
+        movesHistory: [],
+        chat:         [],
+        socketToUser: {},
+        userToSocket: {},
+        createdBy,
+        createdAt:    Date.now()
+    });
+    return games.get(id);
+}
 
-app.get('/login-page', function(req, res) {
-    res.sendFile(__dirname + '/public/phone/loginphone.html');
-});
+function gameSummary(g) {
+    return { id: g.id, name: g.name, white: g.teams.w, black: g.teams.b, createdBy: g.createdBy };
+}
 
-app.get('/about', function(req, res) {
-    res.sendFile(__dirname + '/public/devPage.html');
-});
+function broadcastLobby() {
+    io.emit('lobby update', Array.from(games.values()).map(gameSummary));
+}
 
-let numUsers = 0;
-let currentGame = 'start';
-let chatMessages = [];
-let userToSocketId = {};
-let movesHistory = [];
-let teams = {
-    'w': false,
-    'b': false
-};
-
-// MongoDB connection
+// MongoDB
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connection.on('error', console.error.bind(console, 'DB error:'));
+mongoose.connection.once('open', () => console.log('Connected to DB'));
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log("connected to the database");
-});
-
+// ── Socket.io ────────────────────────────────────────────────────
 io.on('connection', (socket) => {
-    numUsers++;
-    console.log('------------------');
-    console.log('A user connected. Total users: ', numUsers);
 
-    // Send current game state and chat messages
-    socket.emit('init', { game: currentGame, chat: chatMessages, teams: teams, movesHistory: movesHistory });
-
-    socket.on('team selected', function({team, username}) {
-        if (!teams[team]) {
-            teams[team] = username;
-            userToSocketId[username] = socket.id;
-            socket.username = username;
-            io.emit('teams update', teams);
-            io.emit('player joined', {username: username, team: team});
-        }
+    // ── Lobby ────────────────────────────────────────────────────
+    socket.on('get lobby', () => {
+        socket.emit('lobby state', Array.from(games.values()).map(gameSummary));
     });
 
-    socket.on('move', function(msg, piece, from, to) {
-        if (!(teams['w'] === socket.username || teams['b'] === socket.username)) {
-            return;
-        }
-        let colors = {
-            'w': 'White',
-            'b': 'Black'
-        };
-        let pieces = {
-            'p': 'pawn',
-            'r': 'rook',
-            'n': 'knight',
-            'b': 'bishop',
-            'q': 'queen',
-            'k': 'king'
-        };
-        currentGame = msg;
-        movesHistory.push(`${colors[piece.color]} ${pieces[piece.type]} from ${from} to ${to}`);
-        io.emit('move', msg);
-        io.emit('updateHistory', movesHistory);
-        io.emit('move sound');
+    socket.on('create game', ({ name, username }) => {
+        if (!username || username.startsWith('Guest')) return;
+        const g = makeGame(name, username);
+        broadcastLobby();
+        socket.emit('game created', { id: g.id });
     });
 
-    socket.on('chat message', function(msg) {
-        if (chatMessages.length > 150) {
-            chatMessages = chatMessages.slice(-150);
-        }
-        chatMessages.push(msg);
-        io.emit('chat message', msg);
+    // ── Join game ────────────────────────────────────────────────
+    socket.on('join game', ({ gameId, username }) => {
+        const g = games.get(gameId);
+        if (!g) { socket.emit('game not found'); return; }
+
+        if (socket.currentGameId && socket.currentGameId !== gameId) detachFromGame(socket);
+
+        socket.join(gameId);
+        socket.currentGameId = gameId;
+        socket.currentUser   = username;
+        g.socketToUser[socket.id] = username;
+
+        socket.emit('init', {
+            game: g.fen, chat: g.chat, teams: g.teams,
+            movesHistory: g.movesHistory, gameId: g.id, gameName: g.name
+        });
     });
 
-    socket.on('end game', function({ winner, loser }) {
+    // ── Team selection ───────────────────────────────────────────
+    socket.on('team selected', ({ team, username, gameId }) => {
+        const g = games.get(gameId);
+        if (!g || !username || username.startsWith('Guest')) return;
+        if (g.teams[team]) return;
+        g.teams[team] = username;
+        g.userToSocket[username] = socket.id;
+        io.to(gameId).emit('teams update', g.teams);
+        broadcastLobby();
+    });
 
+    // ── Move ─────────────────────────────────────────────────────
+    socket.on('move', ({ fen, piece, from, to, gameId }) => {
+        const g = games.get(gameId);
+        if (!g) return;
+        if (g.teams.w !== socket.currentUser && g.teams.b !== socket.currentUser) return;
+        const C = { w: 'White', b: 'Black' };
+        const P = { p: 'pawn', r: 'rook', n: 'knight', b: 'bishop', q: 'queen', k: 'king' };
+        g.fen = fen;
+        g.movesHistory.push(C[piece.color] + ' ' + P[piece.type] + ' ' + from + '\u2192' + to);
+        io.to(gameId).emit('move', fen);
+        io.to(gameId).emit('updateHistory', g.movesHistory);
+        io.to(gameId).emit('move sound');
+    });
+
+    // ── Chat ─────────────────────────────────────────────────────
+    socket.on('chat message', ({ msg, gameId }) => {
+        const g = games.get(gameId);
+        if (!g) return;
+        if (g.chat.length > 150) g.chat = g.chat.slice(-150);
+        g.chat.push(msg);
+        io.to(gameId).emit('chat message', msg);
+    });
+
+    // ── End game ─────────────────────────────────────────────────
+    socket.on('end game', ({ winner, loser, gameId }) => {
+        const g = games.get(gameId);
+        if (!g) return;
         if (winner === null && loser === null) {
-            io.emit('game result', { message: `Game ended in a draw!` });
+            io.to(gameId).emit('game result', { message: 'Game ended in a draw!' });
             return;
         }
-
-        User.findOne({username: winner})
-        .then(user => {
-            if(!user) {
-                console.error(`User not found: ${winner}`);
-                return;
-            }
-            user.elo = user.elo + 10;
-            user.save().then(() => {
-                io.to(userToSocketId[winner]).emit('update elo', { username: winner, elo: user.elo }); // send to correct socket id
-                io.to(userToSocketId[winner]).emit('game result', { message: `Wow, you're so good ${winner}! 😎`});
-            });
-        })
-        .catch(err => {
-            console.error(err);
-        });
-
-        User.findOne({username: loser})
-        .then(user => {
-            if(!user) {
-                console.error(`User not found: ${loser}`);
-                return;
-            }
-            user.elo = Math.max(user.elo - 10, 0); // Don't let ELO drop below 0
-            user.save().then(() => {
-                io.to(userToSocketId[loser]).emit('update elo', { username: loser, elo: user.elo }); // send to correct socket id
-                io.to(userToSocketId[loser]).emit('game result', { message: `You're so bad it's incredible. RIP BOZO 😂` });
-            });
-        })
-        .catch(err => {
-            console.error(err);
-        });
-    });
-
-    socket.on('requestRestart', function() {
-        let otherPlayer = teams['w'] === socket.username ? teams['b'] : teams['w'];
-        io.to(userToSocketId[otherPlayer]).emit('promptRestart', { username: socket.username });
-    });
-
-    socket.on('responseRestart', function({ username }) {
-        io.to(userToSocketId[username]).emit('responseRestart', { username: socket.username });
-    });
-
-    socket.on('restart', function(msg) {
-        currentGame = msg;
-        teams = {
-            'w': false,
-            'b': false
-        };
-        movesHistory = [];
-        io.emit('teams update', teams);
-        io.emit('restart', msg);
-        io.emit('teams update', teams);
-    });
-
-    // reset the game when restarting
-    socket.on('init', function() {
-        currentGame = 'start';
-    });
-
-    socket.on('disconnect', () => {
-        numUsers--;
-        console.log('------------------');
-        console.log('A user disconnected. Total users: ', numUsers);
-        if (teams['w'] === socket.username) {
-            teams['w'] = false;
-        } else if (teams['b'] === socket.username) {
-            teams['b'] = false;
+        function updateElo(username, delta, msg) {
+            User.findOne({ username }).then(user => {
+                if (!user) return;
+                user.elo = Math.max(0, user.elo + delta);
+                user.save().then(() => {
+                    const sid = g.userToSocket[username];
+                    if (sid) {
+                        io.to(sid).emit('update elo', { username, elo: user.elo });
+                        io.to(sid).emit('game result', { message: msg });
+                    }
+                });
+            }).catch(console.error);
         }
-        delete userToSocketId[socket.username];
-        io.emit('teams update', teams);
-        if (numUsers == 0) {
-            currentGame = 'start';
-            chatMessages = [];
-            movesHistory = [];
-            teams = {
-                'w': false,
-                'b': false
-            };
-            io.emit('teams update', teams);
-        }
+        updateElo(winner, +10, 'You won! Well played.');
+        updateElo(loser,  -10, 'You lost. Better luck next time.');
     });
 
-    io.emit('teams update', teams);
+    // ── Restart ──────────────────────────────────────────────────
+    socket.on('requestRestart', ({ username, gameId }) => {
+        const g = games.get(gameId);
+        if (!g) return;
+        const other = g.teams.w === username ? g.teams.b : g.teams.w;
+        const sid   = other && g.userToSocket[other];
+        if (sid) io.to(sid).emit('promptRestart', { username });
+    });
 
-    if (teams['w'] === socket.username) {
-        socket.emit('team selected', {team: 'w', username: socket.username});
-    } else if (teams['b'] === socket.username) {
-        socket.emit('team selected', {team: 'b', username: socket.username});
+    socket.on('responseRestart', ({ username, gameId }) => {
+        const g = games.get(gameId);
+        if (!g) return;
+        const sid = g.userToSocket[username];
+        if (sid) io.to(sid).emit('responseRestart', { username: socket.currentUser });
+    });
+
+    socket.on('restart', ({ gameId }) => {
+        const g = games.get(gameId);
+        if (!g) return;
+        g.fen          = 'start';
+        g.teams        = { w: null, b: null };
+        g.movesHistory = [];
+        g.userToSocket = {};
+        io.to(gameId).emit('teams update', g.teams);
+        io.to(gameId).emit('restart', 'start');
+        broadcastLobby();
+    });
+
+    // ── Disconnect ───────────────────────────────────────────────
+    socket.on('disconnect', () => detachFromGame(socket));
+
+    function detachFromGame(sock) {
+        const gid = sock.currentGameId;
+        if (!gid) return;
+        const g = games.get(gid);
+        if (g) {
+            delete g.socketToUser[sock.id];
+            if (g.teams.w === sock.currentUser) {
+                g.teams.w = null;
+                delete g.userToSocket[sock.currentUser];
+            } else if (g.teams.b === sock.currentUser) {
+                g.teams.b = null;
+                delete g.userToSocket[sock.currentUser];
+            }
+            io.to(gid).emit('teams update', g.teams);
+            const roomSize = (io.sockets.adapter.rooms.get(gid) || new Set()).size;
+            if (roomSize === 0) games.delete(gid);
+            broadcastLobby();
+        }
+        sock.leave(gid);
+        sock.currentGameId = null;
+        sock.currentUser   = null;
     }
 });
 
 const port = 8080;
-server.listen(port, () => {
-    console.log(`Server is listening at http://localhost:${port}`)
+server.listen(port, '0.0.0.0', () => {
+    console.log(`Server is listening at http://0.0.0.0:${port}`)
 });
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use("/", routes);

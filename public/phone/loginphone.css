@@ -1,132 +1,184 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+/* ================================================================
+   Login Phone — White Design System
+   ================================================================ */
+:root {
+    --bg:      #f8fafc;
+    --surface: #ffffff;
+    --border:  #e2e8f0;
+    --text:    #1e293b;
+    --muted:   #64748b;
+    --accent:  #6366f1;
+    --accent2: #4f46e5;
+    --danger:  #ef4444;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  background: linear-gradient(120deg, #3498db, #8e44ad);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.container {
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  width: 80%;
-  max-width: 500px;
+.about-btn {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    background: var(--bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 100;
+    transition: background 0.2s, color 0.2s;
 }
 
-.form-container {
-  padding: 20px;
+.about-btn:hover { background: var(--border); color: var(--text); }
+
+.auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
 }
 
-.sign-in-container {
-  border-right: 1px solid #ddd;
+/* ── Tabs ────────────────────────────────────────────────────── */
+.tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--border);
 }
 
-.sign-up-container {
-  display: none;
+.tab {
+    flex: 1;
+    padding: 14px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+    position: relative;
+}
+
+.tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tab.active         { color: var(--text); }
+.tab.active::after  { opacity: 1; }
+
+/* ── Form panel ──────────────────────────────────────────────── */
+.form-panel {
+    padding: 28px 24px;
 }
 
 form {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-h1 {
-  margin-bottom: 20px;
-  font-size: 24px;
-  text-align: center;
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-input {
-  margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+.input-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--muted);
+    font-size: 14px;
+    pointer-events: none;
 }
 
-button {
-  padding: 10px;
-  border: 1px solid #FF4B2B;
-  background-color: #FF4B2B;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.input-group input {
+    width: 100%;
+    padding: 12px 40px 12px 38px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
 }
 
-button:hover {
-  background-color: #d44228;
+.input-group input:focus        { border-color: var(--accent); }
+.input-group input::placeholder  { color: var(--muted); }
+.input-group input.error         { border-color: var(--danger); }
+
+.toggle-pwd {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 6px;
+    line-height: 1;
+    transition: color 0.15s;
 }
 
-p {
-  text-align: center;
-  text-decoration: underline;
-  cursor: pointer;
-  margin-top: 20px;
+.toggle-pwd:hover { color: var(--text); }
+
+.btn-primary {
+    padding: 13px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: filter 0.15s, transform 0.1s;
+    margin-top: 4px;
 }
 
-.dev {
-  position: absolute;
-  cursor: pointer;
-  top: 20px;
-  right: 20px;
-  user-select: none;
-}
-
-.dev:hover {
-  text-decoration: underline;
-  color: #392bff;
-}
+.btn-primary:hover  { filter: brightness(1.1); }
+.btn-primary:active { transform: scale(0.97); }
 
 @keyframes shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  10% { transform: translate(-1px, -2px) rotate(-1deg); }
-  20% { transform: translate(-3px, 0px) rotate(1deg); }
-  30% { transform: translate(3px, 2px) rotate(0deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  50% { transform: translate(-1px, 2px) rotate(-1deg); }
-  60% { transform: translate(-3px, 1px) rotate(0deg); }
-  70% { transform: translate(3px, 1px) rotate(-1deg); }
-  80% { transform: translate(-1px, -1px) rotate(1deg); }
-  90% { transform: translate(1px, 2px) rotate(0deg); }
-  100% { transform: translate(1px, -2px) rotate(-1deg); }
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-6px); }
+    40%      { transform: translateX(6px); }
+    60%      { transform: translateX(-4px); }
+    80%      { transform: translateX(4px); }
 }
 
-.shake {
-  animation: shake 0.82s forwards;
-}
+.shake { animation: shake 0.5s ease; }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-.fade-in {
-  animation: fade-in 1.8s forwards;
-}
-
-.password-container {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.toggle-password-visibility {
-  position: absolute;
-  right: 10px;
-  top: 17%;
-  height: 20px;
-  width: 20px;
-}
-
-input[type="text"], input[type="password"] {
-  width: 100%;
-  padding-right: 30px;
-}
+.fade-in { animation: fade-in 0.25s ease forwards; }

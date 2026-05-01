@@ -1,123 +1,114 @@
-const signUpButton = document.getElementById('signUp');
-const signInButton = document.getElementById('signIn');
-const container = document.getElementById('container');
+function switchToSignIn() {
+    document.getElementById('signin-panel').style.display = 'flex';
+    document.getElementById('signup-panel').style.display = 'none';
+    document.getElementById('tab-signin-btn').classList.add('active');
+    document.getElementById('tab-signup-btn').classList.remove('active');
+}
 
-signUpButton.addEventListener('click', () => {
-	container.classList.add("right-panel-active");
+function switchToSignUp() {
+    document.getElementById('signin-panel').style.display = 'none';
+    document.getElementById('signup-panel').style.display = 'flex';
+    document.getElementById('tab-signup-btn').classList.add('active');
+    document.getElementById('tab-signin-btn').classList.remove('active');
+}
+
+document.getElementById('tab-signin-btn').addEventListener('click', switchToSignIn);
+document.getElementById('tab-signup-btn').addEventListener('click', switchToSignUp);
+
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    logIn();
 });
 
-signInButton.addEventListener('click', () => {
-	container.classList.remove("right-panel-active");
+document.getElementById('register-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    register();
 });
 
-document.getElementById("login-form").addEventListener("submit", function(event){
-    event.preventDefault();
-    logIn(event);
-});
+function shakeElement(el) {
+    el.classList.add('shake');
+    setTimeout(function() { el.classList.remove('shake'); }, 500);
+}
 
-document.getElementById("register-form").addEventListener("submit", function(event){
-    event.preventDefault();
-    register(event);
-});
+function setError(input, hasError) {
+    input.classList.toggle('error', hasError);
+    if (!hasError) input.style.borderColor = '';
+}
 
-function shakeElement(element) {
-    element.classList.add('shake');
-    setTimeout(() => element.classList.remove('shake'), 820);
-  }
-
-function logIn(event) {
-    event.preventDefault();
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-    const username = usernameInput.value;
-    const password = passwordInput.value;
-
+function logIn() {
+    var usernameInput = document.getElementById('username');
+    var passwordInput = document.getElementById('password');
     fetch('/login', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    }).then(response => response.json()).then(data => {
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: usernameInput.value, password: passwordInput.value })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
         if (data.status === 'error') {
             if (data.message === 'Incorrect username or password') {
-                usernameInput.style.borderColor = 'red';
-                shakeElement(usernameInput);
-                passwordInput.style.borderColor = 'red';
-                shakeElement(passwordInput);
-                console.log(data.message);
-            } else if (data.message === 'User not found') {
-                usernameInput.style.borderColor = 'red';
-                shakeElement(usernameInput);
-                passwordInput.style.borderColor = '';
-                console.log(data.message);
+                setError(usernameInput, true); shakeElement(usernameInput);
+                setError(passwordInput, true); shakeElement(passwordInput);
+            } else {
+                setError(usernameInput, true); shakeElement(usernameInput);
+                setError(passwordInput, false);
             }
         } else {
-            localStorage.setItem('username', data.username); // Save username in local storage
-            localStorage.setItem('elo', data.elo); // Save Elo in local storage
-            window.location.href = '/chess.html';  // Redirect to the chess page
-            usernameInput.style.borderColor = '';
-            passwordInput.style.borderColor = '';
+            localStorage.setItem('username', data.username);
+            localStorage.setItem('elo', data.elo);
+            window.location.href = '/lobby';
         }
     });
 }
 
-function register(event) {
-    event.preventDefault();
-
-    const usernameInput = document.getElementById('reg-username');
-    const passwordInput = document.getElementById('reg-password');
-    const username = usernameInput.value;
-    const password = passwordInput.value;
-
+function register() {
+    var usernameInput = document.getElementById('reg-username');
+    var passwordInput = document.getElementById('reg-password');
     fetch('/register', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    }).then(response => response.json()).then(data => {
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: usernameInput.value, password: passwordInput.value })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
         if (data.status === 'error') {
-            usernameInput.style.borderColor = 'red';
-            passwordInput.style.borderColor = '';
+            setError(usernameInput, true);
             shakeElement(usernameInput);
+            setError(passwordInput, false);
         } else {
-            usernameInput.style.borderColor = '';
-            passwordInput.value = '';
+            setError(usernameInput, false);
             usernameInput.value = '';
-            container.classList.remove("right-panel-active");
+            passwordInput.value = '';
+            switchToSignIn();
         }
     });
 }
 
 window.onload = function() {
-    const storedUsername = localStorage.getItem('username');
-    const storedElo = localStorage.getItem('elo');
-
-    if (storedUsername && storedElo) {
-        window.location.href = '../chess.html';
+    if (localStorage.getItem('username') && (localStorage.getItem('elo') || localStorage.getItem('isGuest') === 'true')) {
+        window.location.href = '/lobby';
     }
+    document.getElementById('guest-btn').addEventListener('click', function() {
+        localStorage.setItem('isGuest', 'true');
+        localStorage.setItem('username', 'Guest_' + Math.random().toString(36).substr(2, 6).toUpperCase());
+        window.location.href = '/lobby';
+    });
 };
 
-// Function to toggle password visibility
-function togglePasswordVisibility(event) {
-    const img = event.target;
-    const input = img.previousElementSibling;
-
-    if (input.type === 'password') {
-        input.type = 'text';
-        img.src = '../img/pwd/eye.png';
-    } else {
-        input.type = 'password';
-        img.src = '../img/pwd/closedeye.png';
-    }
-}
-
-// add event listeners to all toggle password visibility images
-document.querySelectorAll('.toggle-password-visibility').forEach(img => {
-    img.addEventListener('click', togglePasswordVisibility);
+document.querySelectorAll('.toggle-pwd').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var input = this.previousElementSibling;
+        var icon = this.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'fas fa-eye';
+        } else {
+            input.type = 'password';
+            icon.className = 'fas fa-eye-slash';
+        }
+    });
 });
 
-document.querySelector(".dev").addEventListener("click", function() {
-    window.location.href = '../devPage.html';
+document.getElementById('dev-link').addEventListener('click', function() {
+    window.location.href = '/about';
 });
