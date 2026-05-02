@@ -8,7 +8,7 @@ window.addEventListener('load', function() {
     }
 
     board = Chessboard('myBoard', {
-        position:   'start',
+        position:   game.fen(),
         draggable:  true,
         pieceTheme: '/img/{piece}.png',
 
@@ -29,8 +29,7 @@ window.addEventListener('load', function() {
             removeGreySquares();
             draggedPieceSource = null;
 
-            var piece = game.get(source);
-            var move  = game.move({ from: source, to: target, promotion: 'q' });
+            var move = game.move({ from: source, to: target, promotion: 'q' });
             if (move === null) return 'snapback';
 
             updateStatus();

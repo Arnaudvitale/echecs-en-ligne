@@ -24,9 +24,11 @@ function greySquare(square) {
 }
 
 function updateStatus() {
-    var color  = game.turn() === 'w' ? 'White' : 'Black';
-    var player = game.turn() === 'w' ? whiteTeamPlayer : blackTeamPlayer;
-    var text   = player ? 'Turn: ' + color + ' (' + player + ')' : 'Turn: ' + color;
+    var colorKey = game.turn() === 'w' ? 'white' : 'black';
+    var player   = game.turn() === 'w' ? whiteTeamPlayer : blackTeamPlayer;
+    var colorLabel = t(colorKey);
+    colorLabel = colorLabel.charAt(0).toUpperCase() + colorLabel.slice(1);
+    var text = player ? t('turn') + ': ' + colorLabel + ' (' + player + ')' : t('turn') + ': ' + colorLabel;
     var el = document.getElementById('status');
     if (el) el.textContent = text;
 }

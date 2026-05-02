@@ -14,27 +14,31 @@
             <span id="username"></span>
             <span id="elo-display">ELO <span id="elo"></span></span>
         </div>
-        <h1>Chess Lobby</h1>
-        <button id="logout-btn"><i class="fas fa-right-from-bracket"></i> Logout</button>
+        <h1 data-i18n="lobby-title">Chess Lobby</h1>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <button id="lang-toggle" onclick="toggleLang()" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;">EN</button>
+            <button id="logout-btn"><i class="fas fa-right-from-bracket"></i> <span data-i18n="logout">Logout</span></button>
+        </div>
     </header>
 
     <main>
         <div class="lobby-top">
-            <h2>Active Games</h2>
+            <h2 data-i18n="active-games">Active Games</h2>
             <button id="create-game-btn">
-                <i class="fas fa-plus"></i> New Game
+                <i class="fas fa-plus"></i> <span data-i18n="new-game">New Game</span>
             </button>
         </div>
 
         <div id="games-list"></div>
         <div id="no-games">
             <i class="fas fa-chess-board"></i>
-            <p>No active games.</p>
-            <p id="no-games-hint">Create one to start playing!</p>
+            <p data-i18n="no-games">No active games.</p>
+            <p id="no-games-hint" data-i18n="no-games-hint">Create one to start playing!</p>
         </div>
     </main>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/i18n.js"></script>
     <script src="/js/lobby.js"></script>
     <script>window.history.replaceState(null, null, '/lobby');</script>
 </body>

@@ -9,25 +9,26 @@
     <link rel="stylesheet" href="/pc/loginpc.css">
 </head>
 <body>
-    <button class="about-btn" id="dev-link">About</button>
+    <button class="about-btn" id="dev-link" data-i18n="about">About</button>
+    <button id="lang-toggle" onclick="toggleLang()" style="position:fixed;top:16px;right:80px;background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.25);border-radius:6px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;z-index:1000;">EN</button>
 
     <div class="container" id="container">
         <!-- Sign In -->
         <div class="form-container sign-in-container">
             <form id="login-form" novalidate>
-                <h1>Sign In</h1>
+                <h1 data-i18n="sign-in-tab">Sign In</h1>
                 <div class="input-group">
                     <i class="fas fa-user input-icon"></i>
-                    <input type="text" id="username" placeholder="Username" autocomplete="username" required />
+                    <input type="text" id="username" data-i18n-ph="username-ph" placeholder="Username" autocomplete="username" required />
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock input-icon"></i>
-                    <input type="password" id="password" placeholder="Password" autocomplete="current-password" required />
+                    <input type="password" id="password" data-i18n-ph="password-ph" placeholder="Password" autocomplete="current-password" required />
                     <button type="button" class="toggle-pwd" aria-label="Toggle password">
                         <i class="fas fa-eye-slash"></i>
                     </button>
                 </div>
-                <button type="submit" class="btn-primary">Sign In</button>
+                <button type="submit" class="btn-primary" data-i18n="sign-in-btn">Sign In</button>
             </form>
         </div>
 
@@ -36,16 +37,16 @@
             <form id="register-form" novalidate>
                 <div class="input-group">
                     <i class="fas fa-user input-icon"></i>
-                    <input type="text" id="reg-username" placeholder="Username" autocomplete="username" required />
+                    <input type="text" id="reg-username" data-i18n-ph="username-ph" placeholder="Username" autocomplete="username" required />
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock input-icon"></i>
-                    <input type="password" id="reg-password" placeholder="Password" autocomplete="new-password" required />
+                    <input type="password" id="reg-password" data-i18n-ph="password-ph" placeholder="Password" autocomplete="new-password" required />
                     <button type="button" class="toggle-pwd" aria-label="Toggle password">
                         <i class="fas fa-eye-slash"></i>
                     </button>
                 </div>
-                <button type="submit" class="btn-primary">Register</button>
+                <button type="submit" class="btn-primary" data-i18n="register-btn">Register</button>
             </form>
         </div>
 
@@ -54,15 +55,15 @@
             <div class="overlay">
                 <div class="overlay-panel overlay-left">
                     <div class="overlay-icon"><i class="fas fa-chess-queen"></i></div>
-                    <h1>Welcome Back</h1>
-                    <p>Already have an account?<br>Sign in and play.</p>
-                    <button class="btn-ghost" id="signIn">Sign In</button>
+                    <h1 data-i18n="welcome-back-h">Welcome Back</h1>
+                    <p data-i18n="welcome-back-p">Already have an account?<br>Sign in and play.</p>
+                    <button class="btn-ghost" id="signIn" data-i18n="sign-in-tab">Sign In</button>
                 </div>
                 <div class="overlay-panel overlay-right">
                     <div class="overlay-icon"><i class="fas fa-chess-pawn"></i></div>
-                    <h1>Join the Game</h1>
-                    <p>No account yet?<br>Create one and start playing.</p>
-                    <button class="btn-ghost" id="signUp">Register</button>
+                    <h1 data-i18n="join-game-h">Join the Game</h1>
+                    <p data-i18n="join-game-p">No account yet?<br>Create one and start playing.</p>
+                    <button class="btn-ghost" id="signUp" data-i18n="register-tab">Register</button>
                 </div>
             </div>
         </div>
@@ -70,10 +71,11 @@
 
     <div class="guest-fixed">
         <button id="guest-btn" class="btn-guest">
-            <i class="fas fa-user-secret"></i> Continue as Guest
+            <i class="fas fa-user-secret"></i> <span data-i18n="guest-btn">Continue as Guest</span>
         </button>
     </div>
 
+    <script src="/js/i18n.js"></script>
     <script src="/pc/loginpc.js"></script>
     <script>
         window.history.replaceState(null, null, '/login');

@@ -3,12 +3,14 @@
    ================================================================ */
 
 var socket = io();
+var lastGames = [];
 
 function isMobile() {
     return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 }
 
 function renderGames(games) {
+    lastGames = games || [];
     var list   = document.getElementById('games-list');
     var noGame = document.getElementById('no-games');
     list.innerHTML = '';
@@ -23,15 +25,15 @@ function renderGames(games) {
         var card = document.createElement('div');
         card.className = 'game-card';
 
-        var wName = g.white ? '<span class="slot-taken">' + g.white + '</span>' : '<span class="slot-open">Open</span>';
-        var bName = g.black ? '<span class="slot-taken">' + g.black + '</span>' : '<span class="slot-open">Open</span>';
+        var wName = g.white ? '<span class="slot-taken">' + g.white + '</span>' : '<span class="slot-open">' + t('slot-open') + '</span>';
+        var bName = g.black ? '<span class="slot-taken">' + g.black + '</span>' : '<span class="slot-open">' + t('slot-open') + '</span>';
 
         var count  = (g.white ? 1 : 0) + (g.black ? 1 : 0);
         var badgeClass = count === 2 ? 'badge-full' : count === 1 ? 'badge-half' : 'badge-empty';
         var badgeLabel = count === 2 ? '2/2 Full' : count + '/2';
 
         var statusClass = g.inProgress ? 'status-playing' : 'status-waiting';
-        var statusLabel = g.inProgress ? 'En cours' : 'En attente';
+        var statusLabel = g.inProgress ? t('status-playing') : t('status-waiting');
 
         card.innerHTML =
             '<div class="game-card-header">' +
@@ -40,11 +42,11 @@ function renderGames(games) {
             '</div>' +
             '<div class="game-status ' + statusClass + '">' + statusLabel + '</div>' +
             '<div class="game-card-players">' +
-                '<div class="player-slot"><i class="fa-solid fa-chess-king" style="color:#6366f1"></i> White: ' + wName + '</div>' +
-                '<div class="player-slot"><i class="fa-solid fa-chess-king" style="color:#0f172a"></i> Black: ' + bName + '</div>' +
+                '<div class="player-slot"><i class="fa-solid fa-chess-king" style="color:#6366f1"></i> ' + t('white') + ': ' + wName + '</div>' +
+                '<div class="player-slot"><i class="fa-solid fa-chess-king" style="color:#0f172a"></i> ' + t('black') + ': ' + bName + '</div>' +
             '</div>' +
             '<div class="game-card-actions">' +
-                '<button class="btn-enter"><i class="fas fa-arrow-right"></i> Enter</button>' +
+                '<button class="btn-enter"><i class="fas fa-arrow-right"></i> ' + t('btn-enter') + '</button>' +
             '</div>';
 
         card.querySelector('.btn-enter').addEventListener('click', function() {
@@ -54,6 +56,10 @@ function renderGames(games) {
 
         list.appendChild(card);
     });
+}
+
+function onLangChange() {
+    renderGames(lastGames);
 }
 
 socket.on('connect', function() {
@@ -71,7 +77,7 @@ socket.on('game created', function(data) {
 document.getElementById('create-game-btn').addEventListener('click', function() {
     var username = localStorage.getItem('username');
     if (!username) return;
-    var name = (prompt('Name your game (leave blank for default):') || '').trim();
+    var name = (prompt(t('game-name-prompt')) || '').trim();
     socket.emit('create game', { name: name || null, username: username });
 });
 
@@ -96,8 +102,12 @@ window.onload = function() {
         document.getElementById('elo-display').style.display = 'none';
         var createBtn = document.getElementById('create-game-btn');
         createBtn.disabled = true;
-        createBtn.title    = 'Login to create a game';
-        document.getElementById('no-games-hint').textContent = 'Games will appear here once created.';
+        createBtn.title    = t('login-to-play');
+        var hint = document.getElementById('no-games-hint');
+        if (hint) {
+            hint.setAttribute('data-i18n', 'no-games-hint-guest');
+            hint.textContent = t('no-games-hint-guest');
+        }
     } else {
         var elo = localStorage.getItem('elo') || '—';
         document.getElementById('elo').textContent = elo;

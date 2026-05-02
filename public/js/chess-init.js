@@ -6,7 +6,9 @@ document.getElementById('white-team-btn').addEventListener('click', function() {
     userTeam = 'w';
     this.style.opacity       = '0.6';
     this.style.pointerEvents = 'none';
-    document.getElementById('black-team-btn').style.pointerEvents = 'none';
+    var bb = document.getElementById('black-team-btn');
+    bb.style.opacity       = '0.6';
+    bb.style.pointerEvents = 'none';
     localStorage.setItem('team', 'w');
     socket.emit('team selected', { team: 'w', username: localStorage.getItem('username'), gameId: gameId });
     board.orientation('white');
@@ -18,7 +20,9 @@ document.getElementById('black-team-btn').addEventListener('click', function() {
     userTeam = 'b';
     this.style.opacity       = '0.6';
     this.style.pointerEvents = 'none';
-    document.getElementById('white-team-btn').style.pointerEvents = 'none';
+    var wb = document.getElementById('white-team-btn');
+    wb.style.opacity       = '0.6';
+    wb.style.pointerEvents = 'none';
     localStorage.setItem('team', 'b');
     socket.emit('team selected', { team: 'b', username: localStorage.getItem('username'), gameId: gameId });
     board.orientation('black');
@@ -52,6 +56,10 @@ document.getElementById('restart-btn').addEventListener('click', function() {
     }
 });
 
+function onLangChange() {
+    updateStatus();
+}
+
 window.addEventListener('beforeunload', function() {
     var username = localStorage.getItem('username');
     if (localStorage.getItem('whiteTeamPlayer') === username) localStorage.removeItem('whiteTeamPlayer');
@@ -75,8 +83,8 @@ window.onload = function() {
     if (isGuest) {
         var wb = document.getElementById('white-team-btn');
         var bb = document.getElementById('black-team-btn');
-        if (wb) { wb.disabled = true; wb.title = 'Login to play'; wb.style.opacity = '0.4'; }
-        if (bb) { bb.disabled = true; bb.title = 'Login to play'; bb.style.opacity = '0.4'; }
+        if (wb) { wb.disabled = true; wb.title = t('login-to-play'); wb.style.opacity = '0.4'; }
+        if (bb) { bb.disabled = true; bb.title = t('login-to-play'); bb.style.opacity = '0.4'; }
     }
 
     if (localStorage.getItem('username') === 'arnaud') {

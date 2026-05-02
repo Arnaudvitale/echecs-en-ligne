@@ -12,6 +12,9 @@
 
 socket.on('init', function(state) {
     game.load(state.game);
+    userTeam = localStorage.getItem('team');
+
+    if (board) { board.position(state.game); }
 
     var messagesEl = document.getElementById('messages');
     if (messagesEl) messagesEl.innerHTML = '';
@@ -26,17 +29,7 @@ socket.on('init', function(state) {
     var nameEl = document.getElementById('game-name');
     if (nameEl) nameEl.textContent = state.gameName || '';
 
-    userTeam = localStorage.getItem('team');
     displayMovesHistory(state.movesHistory);
-
-    function applyToBoard() {
-        board.position(state.game);
-        if (userTeam === 'b') board.orientation('black');
-        else board.orientation('white');
-        updateStatus();
-    }
-    if (board) { applyToBoard(); }
-    else { window.addEventListener('load', applyToBoard); }
 });
 
 socket.on('teams update', function(teams) {
@@ -60,6 +53,12 @@ socket.on('teams update', function(teams) {
         if (username === teams['b']) userTeam = 'b';
     } else {
         if (blackBtn) { blackBtn.style.opacity = '1'; blackBtn.style.pointerEvents = 'auto'; }
+    }
+
+    // Si l'utilisateur a déjà une équipe, griser les deux boutons
+    if (userTeam) {
+        if (whiteBtn) { whiteBtn.style.opacity = '0.6'; whiteBtn.style.pointerEvents = 'none'; }
+        if (blackBtn) { blackBtn.style.opacity = '0.6'; blackBtn.style.pointerEvents = 'none'; }
     }
 
     if (restartBtn) restartBtn.style.display = userTeam ? 'flex' : 'none';
@@ -99,7 +98,14 @@ socket.on('update elo', function(data) {
 });
 
 socket.on('game result', function(data) {
-    swal({ title: data.message, buttons: { confirm: { text: 'OK', value: true, visible: true, closeModal: true } } });
+    var msgMap = {
+        'You won! Well played.':            'you-won',
+        'You lost. Better luck next time.': 'you-lost',
+        'Game ended in a draw!':            'draw'
+    };
+    var key = msgMap[data.message];
+    var displayed = key ? t(key) : data.message;
+    swal({ title: displayed, buttons: { confirm: { text: 'OK', value: true, visible: true, closeModal: true } } });
     if (data.message.startsWith('You won')) { playSound(winSound); realisticConfetti(); }
     else if (data.message.startsWith('You lost')) { playSound(loseSound); }
     else if (data.message.startsWith('Game')) { playSound(equalitySound); }
@@ -153,8 +159,8 @@ socket.on('restart', function() {
 
 socket.on('promptRestart', function(msg) {
     swal({
-        title: msg.username + ' wants to restart. Accept?',
-        buttons: { cancel: 'No', confirm: { text: 'Yes', value: true, visible: true } }
+        title: msg.username + t('wants-restart'),
+        buttons: { cancel: t('no'), confirm: { text: t('yes'), value: true, visible: true } }
     }).then(function(val) {
         if (val) socket.emit('responseRestart', { username: msg.username, gameId: gameId });
     });
@@ -164,7 +170,7 @@ socket.on('responseRestart', function(msg) {
     if (msg.username) {
         socket.emit('restart', { gameId: gameId });
     } else {
-        swal({ title: 'Restart declined.', buttons: { confirm: { text: 'OK', value: true, visible: true } } });
+        swal({ title: t('restart-declined'), buttons: { confirm: { text: 'OK', value: true, visible: true } } });
         var btn = document.getElementById('restart-btn');
         if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
     }

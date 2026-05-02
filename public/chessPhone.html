@@ -24,6 +24,7 @@
         </div>
         <h1 class="header-title" id="game-name">Chess</h1>
         <div class="header-actions">
+            <button id="lang-toggle" onclick="toggleLang()" class="btn-icon" style="font-size:11px;font-weight:700;">EN</button>
             <button id="lobby-btn" class="btn-icon btn-lobby" title="Lobby">
                 &lt;
             </button>
@@ -34,15 +35,15 @@
     </header>
 
     <!-- ── Status ─────────────────────────────────────── -->
-    <div id="status" class="status-bar">Loading…</div>
+    <div id="status" class="status-bar" data-i18n="status-loading">Chargement…</div>
 
     <!-- ── Team selection ────────────────────────────── -->
     <div class="team-panel">
         <button id="white-team-btn" class="team-btn team-white">
-            <i class="fas fa-chess-king"></i> White
+            <i class="fas fa-chess-king"></i> <span data-i18n="white">White</span>
         </button>
         <button id="black-team-btn" class="team-btn team-black">
-            <i class="fas fa-chess-king"></i> Black
+            <i class="fas fa-chess-king"></i> <span data-i18n="black">Black</span>
         </button>
     </div>
 
@@ -55,21 +56,21 @@
     <div class="action-bar">
 
         <button id="toggle-history-btn" class="btn-action btn-history">
-            <i class="fas fa-list-ol"></i> Moves
+            <i class="fas fa-list-ol"></i> <span data-i18n="moves-btn">Moves</span>
         </button>
         <button id="restart-btn" class="btn-action btn-restart" style="display:none;">
             <i class="fas fa-rotate-right"></i>
-            <span><span id="two-players">Request </span>Restart</span>
+            <span><span id="two-players" data-i18n="request">Request </span><span data-i18n="restart">Restart</span></span>
         </button>
         <button id="toggle-chat-btn" class="btn-action btn-chat">
-            <i class="fas fa-comments"></i> Chat
+            <i class="fas fa-comments"></i> <span data-i18n="chat-title">Chat</span>
         </button>
     </div>
 
     <!-- ── History panel (gauche) ─────────────────────── -->
     <aside id="history-panel" class="side-panel panel-left" aria-label="Move history">
         <div class="panel-header">
-            <h2><i class="fas fa-list-ol"></i> Move History</h2>
+            <h2><i class="fas fa-list-ol"></i> <span data-i18n="move-history">Move History</span></h2>
             <button id="close-history-btn" class="btn-close" aria-label="Close">
                 <i class="fas fa-xmark"></i>
             </button>
@@ -82,14 +83,14 @@
     <!-- ── Chat panel (droite) ────────────────────────── -->
     <aside id="chat" class="side-panel panel-right" aria-label="Chat">
         <div class="panel-header">
-            <h2><i class="fas fa-comments"></i> Chat</h2>
+            <h2><i class="fas fa-comments"></i> <span data-i18n="chat-title">Chat</span></h2>
             <button id="close-chat-btn" class="btn-close" aria-label="Close">
                 <i class="fas fa-xmark"></i>
             </button>
         </div>
         <div id="messages" class="panel-body messages-list"></div>
         <form id="form" class="chat-form">
-            <input id="input" autocomplete="off" maxlength="150" placeholder="Message…" />
+            <input id="input" autocomplete="off" maxlength="150" data-i18n-ph="message-ph" placeholder="Message…" />
             <button type="submit" aria-label="Send">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -101,6 +102,7 @@
 
     <!-- ── Scripts ────────────────────────────────────── -->
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/i18n.js"></script>
     <script src="/js/chess-state.js"></script>
     <script src="/js/chess-utils.js"></script>
     <script src="/js/chess-board.js"></script>

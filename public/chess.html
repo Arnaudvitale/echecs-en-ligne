@@ -22,11 +22,12 @@
         </div>
         <h1><span id="game-name">Chess</span></h1>
         <div id="logged-in">
+            <button id="lang-toggle" onclick="toggleLang()" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-right:6px;">EN</button>
             <button id="lobby-btn" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;margin-right:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(99,102,241,0.2)'" onmouseout="this.style.background='rgba(99,102,241,0.1)'">
                 &lt; Lobby
             </button>
             <button id="logout-btn">
-                <i class="fas fa-right-from-bracket"></i> Logout
+                <i class="fas fa-right-from-bracket"></i> <span data-i18n="logout">Logout</span>
             </button>
         </div>
     </header>
@@ -34,19 +35,19 @@
     <div id="container">
         <!-- Left: Teams + History -->
         <div class="item team-container">
-            <h2>Choose Team</h2>
+            <h2 data-i18n="choose-team">Choose Team</h2>
             <button id="white-team-btn" class="team-btn">
-                <i class="fas fa-chess-king"></i> White
+                <i class="fas fa-chess-king"></i> <span data-i18n="white">White</span>
             </button>
             <button id="black-team-btn" class="team-btn">
-                <i class="fas fa-chess-king"></i> Black
+                <i class="fas fa-chess-king"></i> <span data-i18n="black">Black</span>
             </button>
             <button id="restart-btn" style="display:none;margin-top:8px;">
                 <i class="fas fa-rotate-right"></i>
-                <span><span id="two-players">Request </span>Restart</span>
+                <span><span id="two-players" data-i18n="request">Request </span><span data-i18n="restart">Restart</span></span>
             </button>
             <div id="move-history">
-                <h2>Move History</h2>
+                <h2 data-i18n="move-history">Move History</h2>
                 <div id="movesHistoryContainer">
                     <ul id="movesHistory"></ul>
                 </div>
@@ -61,11 +62,11 @@
 
         <!-- Right: Chat -->
         <div class="item chat-col">
-            <h2><i class="fas fa-comments"></i> Chat</h2>
+            <h2><i class="fas fa-comments"></i> <span data-i18n="chat-title">Chat</span></h2>
             <div id="chat">
                 <ul id="messages"></ul>
                 <form id="form">
-                    <input id="input" autocomplete="off" maxlength="150" placeholder="Message…" />
+                    <input id="input" autocomplete="off" maxlength="150" data-i18n-ph="message-ph" placeholder="Message…" />
                     <button id="send-btn" type="submit" aria-label="Send">
                         <i class="fas fa-paper-plane"></i>
                     </button>
@@ -75,6 +76,7 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/i18n.js"></script>
     <script src="/js/chess-state.js"></script>
     <script src="/js/chess-utils.js"></script>
     <script src="/js/chess-board.js"></script>

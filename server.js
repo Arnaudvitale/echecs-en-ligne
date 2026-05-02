@@ -90,6 +90,9 @@ io.on('connection', (socket) => {
         socket.currentGameId = gameId;
         socket.currentUser   = username;
         g.socketToUser[socket.id] = username;
+        if (g.teams.w === username || g.teams.b === username) {
+            g.userToSocket[username] = socket.id;
+        }
         socket.emit('init', {
             game: g.fen || 'start', chat: g.chat, teams: g.teams,
             movesHistory: g.movesHistory, gameId: g.id, gameName: g.name
@@ -105,7 +108,7 @@ io.on('connection', (socket) => {
         g.userToSocket[username] = socket.id;
         if (g.firstTeam === null) g.firstTeam = team;
         io.to(gameId).emit('teams update', g.teams);
-        if (g.teams.w && g.teams.b) {
+        if (!g.fen) {
             const startFen = g.firstTeam === 'b'
                 ? 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1'
                 : 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
