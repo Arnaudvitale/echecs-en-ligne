@@ -30,6 +30,11 @@ socket.on('init', function(state) {
     if (nameEl) nameEl.textContent = state.gameName || '';
 
     displayMovesHistory(state.movesHistory);
+
+    if (state.timer && state.timer.enabled) {
+        timerEnabled = true;
+        updateTimers({ w: state.timer.w, b: state.timer.b, active: state.timer.active });
+    }
 });
 
 socket.on('teams update', function(teams) {
@@ -73,6 +78,7 @@ socket.on('teams update', function(teams) {
 });
 
 socket.on('move', function(fen) {
+    exitPreview(); // quitter la prévisualisation quand un nouveau coup arrive
     game.load(fen);
     board.position(game.fen());
     if (!userTeam || userTeam === 'w') board.orientation('white');
@@ -105,16 +111,28 @@ socket.on('game result', function(data) {
     };
     var key = msgMap[data.message];
     var displayed = key ? t(key) : data.message;
+    if (data.eloDelta != null) {
+        displayed += ' (' + (data.eloDelta >= 0 ? '+' : '') + data.eloDelta + ' Elo)';
+    }
     swal({ title: displayed, buttons: { confirm: { text: 'OK', value: true, visible: true, closeModal: true } } });
     if (data.message.startsWith('You won')) { playSound(winSound); realisticConfetti(); }
     else if (data.message.startsWith('You lost')) { playSound(loseSound); }
     else if (data.message.startsWith('Game')) { playSound(equalitySound); }
     var tp = document.getElementById('two-players');
     if (tp) tp.style.display = 'none';
+    // Stop timer highlight
+    ['w', 'b'].forEach(function(c) {
+        var box = document.getElementById('timer-' + c);
+        if (box) { box.classList.remove('timer-active'); box.classList.remove('timer-low'); }
+    });
 });
 
 socket.on('game not found', function() {
     window.location.href = '/lobby';
+});
+
+socket.on('timer update', function(data) {
+    updateTimers(data);
 });
 
 socket.on('game start', function(data) {
@@ -124,6 +142,10 @@ socket.on('game start', function(data) {
     else board.orientation('white');
     updateStatus();
     isKingInCheck();
+    if (data.timer && data.timer.enabled) {
+        timerEnabled = true;
+        updateTimers({ w: data.timer.w, b: data.timer.b, active: null });
+    }
 });
 
 socket.on('restart', function() {
@@ -155,6 +177,16 @@ socket.on('restart', function() {
 
     var mh = document.getElementById('movesHistory');
     if (mh) mh.innerHTML = '';
+
+    // Hide timers on restart
+    var tr = document.getElementById('timers-row');
+    if (tr) tr.style.display = 'none';
+    ['w', 'b'].forEach(function(c) {
+        var el = document.getElementById('timer-' + c + '-time');
+        if (el) el.textContent = '—:——';
+        var box = document.getElementById('timer-' + c);
+        if (box) { box.classList.remove('timer-active'); box.classList.remove('timer-low'); }
+    });
 });
 
 socket.on('promptRestart', function(msg) {
@@ -174,5 +206,23 @@ socket.on('responseRestart', function(msg) {
         var btn = document.getElementById('restart-btn');
         if (btn) { btn.style.opacity = '1'; btn.style.pointerEvents = 'auto'; }
     }
+});
+
+socket.on('opponent disconnected', function(data) {
+    swal({
+        title: data.username + t('opponent-left'),
+        text: t('disconnected-choose'),
+        buttons: {
+            cancel: { text: t('forfeit'), value: 'forfeit', visible: true },
+            confirm: { text: t('restart'), value: 'restart', visible: true }
+        }
+    }).then(function(val) {
+        if (val === 'restart') {
+            socket.emit('restart', { gameId: gameId });
+        } else {
+            var username = localStorage.getItem('username');
+            socket.emit('end game', { winner: username, loser: data.username, gameId: gameId });
+        }
+    });
 });
 

@@ -15,6 +15,8 @@ window.addEventListener('load', function() {
         onDragStart: function(source, piece) {
             if (game.game_over()) return false;
             if (!userTeam)  return false;
+            // Avec timer : bloquer tant que les deux joueurs ne sont pas présents
+            if (timerEnabled && (!whiteTeamPlayer || !blackTeamPlayer)) return false;
             if (userTeam === 'w' && /^b/.test(piece)) return false;
             if (userTeam === 'b' && /^w/.test(piece)) return false;
             draggedPieceSource = source;

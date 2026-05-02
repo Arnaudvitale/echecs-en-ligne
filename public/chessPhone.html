@@ -24,7 +24,7 @@
         </div>
         <h1 class="header-title" id="game-name">Chess</h1>
         <div class="header-actions">
-            <button id="lang-toggle" onclick="toggleLang()" class="btn-icon" style="font-size:11px;font-weight:700;">EN</button>
+            <img id="lang-toggle" onclick="toggleLang()" src="https://flagcdn.com/fr.svg" alt="FR" style="width:26px;height:18px;border-radius:3px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.15);object-fit:cover;">
             <button id="lobby-btn" class="btn-icon btn-lobby" title="Lobby">
                 &lt;
             </button>
@@ -36,7 +36,17 @@
 
     <!-- ── Status ─────────────────────────────────────── -->
     <div id="status" class="status-bar" data-i18n="status-loading">Chargement…</div>
-
+    <!-- ── Timers ──────────────────────────────────────── -->
+    <div id="timers-row" style="display:none;">
+        <div id="timer-w" class="timer-box">
+            <span class="timer-name" data-i18n="white">Blanc</span>
+            <span id="timer-w-time" class="timer-time">—:——</span>
+        </div>
+        <div id="timer-b" class="timer-box">
+            <span class="timer-name" data-i18n="black">Noir</span>
+            <span id="timer-b-time" class="timer-time">—:——</span>
+        </div>
+    </div>
     <!-- ── Team selection ────────────────────────────── -->
     <div class="team-panel">
         <button id="white-team-btn" class="team-btn team-white">
@@ -101,6 +111,9 @@
     <div id="overlay" class="overlay"></div>
 
     <!-- ── Scripts ────────────────────────────────────── -->
+    <!-- Banner prévisualisation spectateur -->
+    <div id="preview-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#f8fafc;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:600;z-index:50;pointer-events:none;opacity:0.9;" data-i18n="preview-hint">Cliquez n’importe où pour revenir à la partie</div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/i18n.js"></script>
     <script src="/js/chess-state.js"></script>

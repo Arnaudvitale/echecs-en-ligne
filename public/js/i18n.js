@@ -43,7 +43,19 @@ var LANGS = {
         'yes':               'Yes',
         'no':                'No',
         'restart-declined':  'Restart declined.',
-        'game-name-prompt':  'Name your game (leave blank for default):'
+        'king-check':        'King in check!',
+        'game-over':         'Game over',
+        'game-name-prompt':  'Name your game (leave blank for default):',
+        'create-game-title': 'New Game',
+        'create-game-ph':    'Game name (optional)',
+        'cancel':            'Cancel',
+        'create':            'Create',
+        'preview-hint':      'Click anywhere to return to the game',
+        'timer-option':      'Time control',
+        'timer-none':        'No timer',
+        'forfeit':           'Forfeit',
+        'opponent-left':     ' disconnected.',
+        'disconnected-choose': 'Restart the game or count it as a forfeit?'
     },
     fr: {
         'about':             '\u00c0 propos',
@@ -89,7 +101,19 @@ var LANGS = {
         'yes':               'Oui',
         'no':                'Non',
         'restart-declined':  'Recommencer refus\u00e9.',
-        'game-name-prompt':  'Nommez votre partie (vide pour nom par d\u00e9faut)\u00a0:'
+        'king-check':        'Roi en \u00e9chec\u00a0!',
+        'game-over':         'Partie termin\u00e9e',
+        'game-name-prompt':  'Nommez votre partie (vide pour nom par d\u00e9faut)\u00a0:',
+        'create-game-title': 'Nouvelle partie',
+        'create-game-ph':    'Nom de la partie (facultatif)',
+        'cancel':            'Annuler',
+        'create':            'Cr\u00e9er',
+        'preview-hint':      'Cliquez n\u2019importe o\u00f9 pour revenir \u00e0 la partie',
+        'timer-option':      'Contr\u00f4le du temps',
+        'timer-none':        'Sans minuterie',
+        'forfeit':           'Forfait',
+        'opponent-left':     ' s\u2019est d\u00e9connect\u00e9.',
+        'disconnected-choose': 'Recommencer ou compter comme forfait\u00a0?'
     }
 };
 
@@ -116,7 +140,14 @@ function applyTranslations() {
         if (val !== undefined) el.placeholder = val;
     });
     var btn = document.getElementById('lang-toggle');
-    if (btn) btn.textContent = lang === 'fr' ? 'EN' : 'FR';
+    if (btn) {
+        if (btn.tagName === 'IMG') {
+            btn.src = lang === 'fr' ? 'https://flagcdn.com/fr.svg' : 'https://flagcdn.com/gb.svg';
+            btn.alt = lang === 'fr' ? 'FR' : 'EN';
+        } else {
+            btn.textContent = lang === 'fr' ? '\uD83C\uDDEB\uD83C\uDDF7' : '\uD83C\uDDEC\uD83C\uDDE7';
+        }
+    }
 }
 
 function toggleLang() {

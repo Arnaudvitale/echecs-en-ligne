@@ -22,9 +22,9 @@
         </div>
         <h1><span id="game-name">Chess</span></h1>
         <div id="logged-in">
-            <button id="lang-toggle" onclick="toggleLang()" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;margin-right:6px;">EN</button>
+            <img id="lang-toggle" onclick="toggleLang()" src="https://flagcdn.com/fr.svg" alt="FR" style="width:28px;height:20px;border-radius:3px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.12);object-fit:cover;margin-right:6px;">
             <button id="lobby-btn" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;margin-right:8px;transition:background 0.2s;" onmouseover="this.style.background='rgba(99,102,241,0.2)'" onmouseout="this.style.background='rgba(99,102,241,0.1)'">
-                &lt; Lobby
+                Lobby
             </button>
             <button id="logout-btn">
                 <i class="fas fa-right-from-bracket"></i> <span data-i18n="logout">Logout</span>
@@ -58,6 +58,16 @@
         <div class="item board-col">
             <div id="status"></div>
             <div id="myBoard"></div>
+            <div id="timers-row" style="display:none;">
+                <div id="timer-w" class="timer-box">
+                    <span class="timer-name" data-i18n="white">Blanc</span>
+                    <span id="timer-w-time" class="timer-time">—:——</span>
+                </div>
+                <div id="timer-b" class="timer-box">
+                    <span class="timer-name" data-i18n="black">Noir</span>
+                    <span id="timer-b-time" class="timer-time">—:——</span>
+                </div>
+            </div>
         </div>
 
         <!-- Right: Chat -->
@@ -74,6 +84,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Banner prévisualisation spectateur -->
+    <div id="preview-banner" style="display:none;position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#1e293b;color:#f8fafc;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:600;z-index:50;pointer-events:none;opacity:0.9;" data-i18n="preview-hint">Cliquez n’importe où pour revenir à la partie</div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/i18n.js"></script>

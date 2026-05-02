@@ -5,6 +5,7 @@ var board  = null;
 var userTeam        = null;
 var whiteTeamPlayer = null;
 var blackTeamPlayer = null;
+var timerEnabled    = false;
 
 var whiteSquareGrey = '#a9a9a9';
 var blackSquareGrey = '#696969';

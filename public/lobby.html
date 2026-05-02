@@ -16,7 +16,7 @@
         </div>
         <h1 data-i18n="lobby-title">Chess Lobby</h1>
         <div style="display:flex;align-items:center;gap:8px;">
-            <button id="lang-toggle" onclick="toggleLang()" style="background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:7px 10px;font-size:12px;font-weight:700;cursor:pointer;">EN</button>
+            <img id="lang-toggle" onclick="toggleLang()" src="https://flagcdn.com/fr.svg" alt="FR" style="width:28px;height:20px;border-radius:3px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.12);object-fit:cover;">
             <button id="logout-btn"><i class="fas fa-right-from-bracket"></i> <span data-i18n="logout">Logout</span></button>
         </div>
     </header>
@@ -36,6 +36,31 @@
             <p id="no-games-hint" data-i18n="no-games-hint">Create one to start playing!</p>
         </div>
     </main>
+
+    <div id="create-modal" style="display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;background:rgba(15,23,42,0.45);backdrop-filter:blur(4px);">
+        <div style="background:#fff;border-radius:16px;padding:28px 24px;width:min(360px,90vw);box-shadow:0 12px 40px rgba(0,0,0,0.18);display:flex;flex-direction:column;gap:18px;">
+            <h2 style="font-size:17px;font-weight:700;color:#1e293b;" data-i18n="create-game-title">Nouvelle partie</h2>
+            <input id="modal-game-name" type="text" maxlength="40"
+                style="border:1px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:14px;outline:none;transition:border-color .2s;"
+                data-i18n-ph="create-game-ph" placeholder="Nom de la partie (facultatif)"
+                onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#e2e8f0'" />
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                <label style="font-size:13px;font-weight:600;color:#64748b;" data-i18n="timer-option">Contrôle du temps</label>
+                <select id="modal-timer" style="border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;cursor:pointer;background:#fff;outline:none;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#e2e8f0'">
+                    <option value="0" data-i18n="timer-none">Sans minuterie</option>
+                    <option value="60">1 min (Bullet)</option>
+                    <option value="180">3 min (Blitz)</option>
+                    <option value="300">5 min (Blitz)</option>
+                    <option value="600">10 min (Rapide)</option>
+                    <option value="1800">30 min (Classique)</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button id="modal-cancel" style="background:#f1f5f9;color:#64748b;border:none;border-radius:8px;padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;" data-i18n="cancel">Annuler</button>
+                <button id="modal-create" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:14px;font-weight:600;cursor:pointer;" data-i18n="create">Créer</button>
+            </div>
+        </div>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/i18n.js"></script>

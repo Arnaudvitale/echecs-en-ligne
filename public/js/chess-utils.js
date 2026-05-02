@@ -39,32 +39,107 @@ function isKingInCheck() {
     }
 }
 
+var lastHistoryMoves = [];
+var isPreviewMode    = false;
+
 function displayMovesHistory(history) {
+    lastHistoryMoves = history || [];
     var listEl      = document.getElementById('movesHistory');
     var containerEl = document.getElementById('movesHistoryContainer');
     if (!listEl) return;
 
     listEl.innerHTML = '';
 
-    history.forEach(function(move, i) {
+    for (var i = 0; i < history.length; i += 2) {
         var li       = document.createElement('li');
-        li.textContent = (i + 1) + '. ' + move;
+        var moveNum  = Math.floor(i / 2) + 1;
+        var white    = history[i];
+        var black    = history[i + 1] || '';
+        li.innerHTML =
+            '<span class="move-num">' + moveNum + '.</span>' +
+            '<span class="move-w" data-move-idx="' + i + '">'       + white + '</span>' +
+            (black ? '<span class="move-b" data-move-idx="' + (i + 1) + '">' + black + '</span>' : '<span class="move-b"></span>');
         listEl.appendChild(li);
-    });
+    }
+
+    // Listeners de prévisualisation (spectateurs uniquement)
+    if (!userTeam) {
+        listEl.querySelectorAll('.move-w[data-move-idx], .move-b[data-move-idx]').forEach(function(span) {
+            span.style.cursor = 'pointer';
+            span.addEventListener('click', function(e) {
+                e.stopPropagation();
+                previewMoveAt(parseInt(span.getAttribute('data-move-idx')));
+            });
+        });
+    }
 
     if (game.in_check()) {
         var li       = document.createElement('li');
         li.className   = 'check-alert';
-        li.textContent = (game.turn() === 'w' ? 'White' : 'Black') + ' King in check!';
+        var colorKey   = game.turn() === 'w' ? 'white' : 'black';
+        var label      = t(colorKey);
+        label          = label.charAt(0).toUpperCase() + label.slice(1);
+        li.textContent = label + ' — ' + t('king-check');
         listEl.appendChild(li);
     }
 
     if (game.game_over()) {
         var li       = document.createElement('li');
         li.className   = 'game-over-alert';
-        li.textContent = 'Game over';
+        li.textContent = t('game-over');
         listEl.appendChild(li);
     }
 
     if (containerEl) containerEl.scrollTop = containerEl.scrollHeight;
+}
+
+function previewMoveAt(idx) {
+    if (userTeam) return;
+    var temp = new Chess();
+    for (var i = 0; i <= idx && i < lastHistoryMoves.length; i++) {
+        temp.move(lastHistoryMoves[i]);
+    }
+    board.position(temp.fen());
+    isPreviewMode = true;
+
+    document.querySelectorAll('#movesHistory .move-preview-active').forEach(function(s) {
+        s.classList.remove('move-preview-active');
+    });
+    var active = document.querySelector('#movesHistory [data-move-idx="' + idx + '"]');
+    if (active) active.classList.add('move-preview-active');
+
+    var banner = document.getElementById('preview-banner');
+    if (banner) banner.style.display = 'block';
+}
+
+function exitPreview() {
+    if (!isPreviewMode) return;
+    isPreviewMode = false;
+    board.position(game.fen());
+    document.querySelectorAll('#movesHistory .move-preview-active').forEach(function(s) {
+        s.classList.remove('move-preview-active');
+    });
+    var banner = document.getElementById('preview-banner');
+    if (banner) banner.style.display = 'none';
+}
+
+function formatTime(seconds) {
+    if (seconds < 0) seconds = 0;
+    var m = Math.floor(seconds / 60);
+    var s = seconds % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function updateTimers(data) {
+    var row = document.getElementById('timers-row');
+    if (!row) return;
+    row.style.display = 'flex';
+    ['w', 'b'].forEach(function(color) {
+        var box    = document.getElementById('timer-' + color);
+        var timeEl = document.getElementById('timer-' + color + '-time');
+        if (!box || !timeEl) return;
+        timeEl.textContent = formatTime(data[color] != null ? data[color] : 0);
+        box.classList.toggle('timer-active', data.active === color);
+        box.classList.toggle('timer-low', data.active === color && data[color] <= 30);
+    });
 }

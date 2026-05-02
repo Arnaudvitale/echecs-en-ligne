@@ -35,9 +35,13 @@ function renderGames(games) {
         var statusClass = g.inProgress ? 'status-playing' : 'status-waiting';
         var statusLabel = g.inProgress ? t('status-playing') : t('status-waiting');
 
+        var timerBadge = g.timer > 0
+            ? ' <span style="font-size:11px;font-weight:700;color:#6366f1;background:rgba(99,102,241,0.1);border-radius:4px;padding:1px 6px;margin-left:6px;">⏱️ ' + (g.timer < 60 ? g.timer + 's' : Math.floor(g.timer / 60) + ' min') + '</span>'
+            : '';
+
         card.innerHTML =
             '<div class="game-card-header">' +
-                '<div class="game-card-name">' + g.name + '</div>' +
+                '<div class="game-card-name">' + g.name + timerBadge + '</div>' +
                 '<span class="player-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
             '</div>' +
             '<div class="game-status ' + statusClass + '">' + statusLabel + '</div>' +
@@ -74,11 +78,42 @@ socket.on('game created', function(data) {
     window.location.href = path + '?id=' + data.id;
 });
 
+var createModal    = document.getElementById('create-modal');
+var modalNameInput = document.getElementById('modal-game-name');
+
+function openCreateModal() {
+    modalNameInput.value = '';
+    createModal.style.display = 'flex';
+    setTimeout(function() { modalNameInput.focus(); }, 50);
+}
+
+function closeCreateModal() {
+    createModal.style.display = 'none';
+}
+
+function submitCreate() {
+    var username = localStorage.getItem('username');
+    if (!username) return;
+    var name = modalNameInput.value.trim();
+    var timerSeconds = parseInt(document.getElementById('modal-timer').value) || 0;
+    socket.emit('create game', { name: name || null, username: username, timerSeconds: timerSeconds });
+    closeCreateModal();
+}
+
+document.getElementById('modal-cancel').addEventListener('click', closeCreateModal);
+document.getElementById('modal-create').addEventListener('click', submitCreate);
+modalNameInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitCreate();
+    if (e.key === 'Escape') closeCreateModal();
+});
+createModal.addEventListener('click', function(e) {
+    if (e.target === createModal) closeCreateModal();
+});
+
 document.getElementById('create-game-btn').addEventListener('click', function() {
     var username = localStorage.getItem('username');
     if (!username) return;
-    var name = (prompt(t('game-name-prompt')) || '').trim();
-    socket.emit('create game', { name: name || null, username: username });
+    openCreateModal();
 });
 
 document.getElementById('logout-btn').addEventListener('click', function() {
