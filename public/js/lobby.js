@@ -36,7 +36,7 @@ function renderGames(games) {
         var statusLabel = g.inProgress ? t('status-playing') : t('status-waiting');
 
         var timerBadge = g.timer > 0
-            ? ' <span style="font-size:11px;font-weight:700;color:#6366f1;background:rgba(99,102,241,0.1);border-radius:4px;padding:1px 6px;margin-left:6px;">⏱️ ' + (g.timer < 60 ? g.timer + 's' : Math.floor(g.timer / 60) + ' min') + '</span>'
+            ? ' <span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:#6366f1;background:rgba(99,102,241,0.1);border-radius:4px;padding:1px 6px;margin-left:6px;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/><path d="M12 2v3"/></svg>' + (g.timer < 60 ? g.timer + 's' : Math.floor(g.timer / 60) + ' min') + '</span>'
             : '';
 
         card.innerHTML =
